@@ -30,3 +30,19 @@ services:
         sync: false
       - key: APP_STRIPE_CANCEL_URL
         sync: false
+      - key: APP_TELEGRAM_ENABLED
+        value: "true"
+      - key: APP_TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: APP_TELEGRAM_CHAT_ID
+        sync: false
+      - key: APP_KHQR_DEMO_MODE
+        value: "true"
+      - key: APP_BAKONG_ENABLED
+        value: "true"
+      - key: APP_KHQR_ENABLED
+        value: "true"
+      - key: APP_PUSH_ENABLED
+        value: "false"
+      - key: APP_BACKUP_ENABLED
+        value: "true"
