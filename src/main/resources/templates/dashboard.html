@@ -16,7 +16,46 @@
       <div class="stat-card"><div class="label">Customers</div><div class="value" th:text="${totalCustomers}">0</div></div>
       <div class="stat-card"><div class="label">Pending orders</div><div class="value" th:text="${pendingOrders}">0</div></div>
       <div class="stat-card accent"><div class="label">Today's revenue</div><div class="value" th:text="'$' + ${#numbers.formatDecimal(todayRevenue, 1, 2)}">$0</div></div>
+      <div class="stat-card"><div class="label">Week revenue</div><div class="value" th:text="'$' + ${#numbers.formatDecimal(weekRevenue, 1, 2)}">$0</div></div>
+      <div class="stat-card"><div class="label">Month revenue</div><div class="value" th:text="'$' + ${#numbers.formatDecimal(monthRevenue, 1, 2)}">$0</div></div>
       <div class="stat-card"><div class="label">Low stock</div><div class="value" th:text="${lowStockItems}">0</div></div>
+      <div class="stat-card"><div class="label">Tables free</div><div class="value" th:text="${availableTables}">0</div></div>
+    </div>
+
+    <div class="grid-2 mb-3" th:if="${topCustomers != null and !topCustomers.isEmpty()}">
+      <div class="card">
+        <h3>Top customers</h3>
+        <ul style="list-style:none;padding:0;margin:0.75rem 0 0;">
+          <li th:each="row, stat : ${topCustomers}" class="flex justify-between" style="padding:0.35rem 0;border-bottom:1px solid var(--border);">
+            <span th:text="${stat.count} + '. ' + ${row[0]}"></span>
+            <span class="text-muted" th:text="'$' + ${#numbers.formatDecimal(row[1],1,2)}"></span>
+          </li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Revenue (7 days)</h3>
+        <canvas id="revenueChart" height="160"></canvas>
+      </div>
+    </div>
+
+    <div class="grid-2 mb-3">
+      <div class="card" th:if="${bestSellers != null and !bestSellers.isEmpty()}">
+        <h3>Best sellers</h3>
+        <ul style="list-style:none;padding:0;margin:0.75rem 0 0;">
+          <li th:each="row, stat : ${bestSellers}" class="flex justify-between" style="padding:0.35rem 0;border-bottom:1px solid var(--border);">
+            <span th:text="${stat.count} + '. ' + ${row[0]}">1. Latte</span>
+            <span class="text-muted" th:text="${row[1]} + ' sold'">10 sold</span>
+          </li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Quick links</h3>
+        <div class="action-bar mt-2" style="flex-direction:column;align-items:stretch;">
+          <a href="/admin/kitchen" class="btn btn-outline">Kitchen display</a>
+          <a href="/admin/ingredients" class="btn btn-outline">Ingredients</a>
+          <a href="/admin/accounting" class="btn btn-outline">Accounting</a>
+        </div>
+      </div>
     </div>
 
     <div class="action-bar">
@@ -49,6 +88,20 @@
     </div>
   </main>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script th:inline="javascript">
+  const chartData = /*[[${chartData}]]*/ [];
+  if (chartData.length && document.getElementById('revenueChart')) {
+    new Chart(document.getElementById('revenueChart'), {
+      type: 'line',
+      data: {
+        labels: chartData.map(r => r[0]),
+        datasets: [{ label: 'Revenue', data: chartData.map(r => r[1]), borderColor: '#c67b4a', tension: 0.3 }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
+  }
+</script>
 <script src="/javascript/ui.js"></script>
 </body>
 </html>

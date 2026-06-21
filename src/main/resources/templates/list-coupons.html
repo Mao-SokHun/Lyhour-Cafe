@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <button type="button" class="btn btn-outline admin-mobile-toggle" id="admin-sidebar-toggle"><i class="fa-solid fa-bars"></i> Menu</button>
+    <div class="admin-topbar"><div><h1>Coupons</h1><p class="page-subtitle">Promo codes for checkout</p></div></div>
+
+    <div th:if="${param.saved}" class="card card-flat mb-2" style="background:var(--success-bg);padding:0.75rem 1rem;">Coupon saved.</div>
+    <div th:if="${param.deleted}" class="card card-flat mb-2" style="background:var(--success-bg);padding:0.75rem 1rem;">Coupon deleted.</div>
+
+    <div class="card mb-3">
+      <h3>Create coupon</h3>
+      <form th:action="@{/admin/coupons/save}" th:object="${coupon}" method="post" class="mt-2">
+        <div class="grid-2">
+          <div class="form-group"><label>Code</label><input class="input" th:field="*{code}" required placeholder="SAVE10"></div>
+          <div class="form-group"><label>Type</label>
+            <select class="select" th:field="*{type}"><option value="PERCENT">Percent off</option><option value="FIXED">Fixed amount</option></select>
+          </div>
+          <div class="form-group"><label>Value</label><input class="input" type="number" step="0.01" th:field="*{value}" required></div>
+          <div class="form-group"><label>Max uses</label><input class="input" type="number" th:field="*{maxUses}" value="100"></div>
+          <div class="form-group"><label>Valid from</label><input class="input" type="date" th:field="*{validFrom}"></div>
+          <div class="form-group"><label>Valid until</label><input class="input" type="date" th:field="*{validUntil}"></div>
+        </div>
+        <div class="form-group"><label>Description</label><input class="input" th:field="*{description}" placeholder="10% off first order"></div>
+        <button type="submit" class="btn btn-primary mt-2">Save coupon</button>
+      </form>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Uses</th><th>Valid</th><th>Active</th><th></th></tr></thead>
+        <tbody>
+          <tr th:each="c : ${coupons}">
+            <td><strong th:text="${c.code}"></strong><br><span class="text-muted" style="font-size:0.82rem;" th:text="${c.description}"></span></td>
+            <td th:text="${c.type}"></td>
+            <td th:text="${c.type.name() == 'PERCENT'} ? ${c.value} + '%' : '$' + ${c.value}"></td>
+            <td th:text="${c.usedCount} + ' / ' + ${c.maxUses}"></td>
+            <td><span th:text="${c.validFrom}"></span> – <span th:text="${c.validUntil}"></span></td>
+            <td th:text="${c.active} ? 'Yes' : 'No'"></td>
+            <td><a th:href="@{/admin/coupons/delete(id=${c.id})}" class="btn btn-ghost btn-sm" style="color:var(--danger);" onclick="return confirm('Delete this coupon?')">Delete</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script src="/javascript/ui.js"></script>
+</body>
+</html>

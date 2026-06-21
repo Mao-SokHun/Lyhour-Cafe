@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <button type="button" class="btn btn-outline admin-mobile-toggle" id="admin-sidebar-toggle"><i class="fa-solid fa-bars"></i> Menu</button>
+    <div class="admin-topbar"><div><h1>Tables</h1><p class="page-subtitle">Dine-in table management</p></div></div>
+
+    <div th:if="${param.saved}" class="card card-flat mb-2" style="background:var(--success-bg);padding:0.75rem 1rem;">Table saved.</div>
+    <div th:if="${param.updated}" class="card card-flat mb-2" style="background:var(--success-bg);padding:0.75rem 1rem;">Status updated.</div>
+
+    <div class="card mb-3" style="max-width:480px;">
+      <h3>Add table</h3>
+      <form th:action="@{/admin/tables/save}" method="post" class="grid-2 mt-2">
+        <div class="form-group"><label>Table #</label><input class="input" name="tableNumber" required placeholder="T9"></div>
+        <div class="form-group"><label>Capacity</label><input class="input" type="number" name="capacity" value="4" min="1" required></div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <button type="submit" class="btn btn-primary">Add table</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Table</th><th>QR</th><th>Capacity</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr th:each="t : ${tables}">
+            <td th:text="${t.tableNumber}">T1</td>
+            <td>
+              <div class="flex gap-sm items-center">
+                <img th:src="@{'/admin/tables/' + ${t.id} + '/qr.png'}" alt="QR" width="64" height="64" style="border-radius:8px;background:#fff;">
+                <div>
+                  <code th:text="${t.qrCode}"></code><br>
+                  <a th:if="${t.qrCode}" th:href="@{'/qr/' + ${t.qrCode}}" target="_blank" class="text-muted" style="font-size:0.8rem;">Open menu</a><br>
+                  <a th:href="@{'/admin/tables/' + ${t.id} + '/print-qr'}" target="_blank" class="text-muted" style="font-size:0.8rem;">Print QR</a>
+                </div>
+              </div>
+            </td>
+            <td th:text="${t.capacity}">4</td>
+            <td><span class="badge" th:classappend="${t.status.name() == 'AVAILABLE'} ? 'badge-completed' : 'badge-preparing'" th:text="${t.status}"></span></td>
+            <td>
+              <form th:action="@{/admin/tables/{id}/status(id=${t.id})}" method="post" class="flex gap-sm">
+                <select name="status" class="select" style="padding:0.4rem;font-size:0.85rem;">
+                  <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${s == t.status}"></option>
+                </select>
+                <button type="submit" class="btn btn-ghost btn-sm">Save</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script src="/javascript/ui.js"></script>
+</body>
+</html>

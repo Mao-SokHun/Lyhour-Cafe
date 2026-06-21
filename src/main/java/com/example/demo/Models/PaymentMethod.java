@@ -5,5 +5,10 @@ public enum PaymentMethod {
     CARD_AT_SHOP,
     ONLINE_MOCK,
     PAY_AT_PICKUP,
-    STRIPE
+    STRIPE,
+    BAKONG,
+    ABA,
+    KHQR,
+    WING,
+    ACLEDA
 }

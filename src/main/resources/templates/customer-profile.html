@@ -10,10 +10,21 @@
       <div class="card mt-2">
         <div class="form-group"><label>Username</label><p style="margin:0;font-size:1.1rem;" th:text="${user.username}"></p></div>
         <div class="form-group"><label>Email</label><p style="margin:0;font-size:1.1rem;" th:text="${user.email}"></p></div>
+        <div class="form-group"><label>Phone</label><p style="margin:0;" th:text="${user.phone != null ? user.phone : '—'}"></p></div>
+        <div class="card card-flat mt-2" style="background:var(--surface-2);padding:1rem;">
+          <strong>Loyalty</strong>
+          <p style="margin:0.35rem 0 0;">Tier: <span class="badge badge-inshop" th:text="${user.membershipTier}"></span></p>
+          <p style="margin:0.25rem 0 0;">Points: <strong th:text="${user.loyaltyPoints}"></strong> · Spent: <strong th:text="'$' + ${#numbers.formatDecimal(user.totalSpending,1,2)}"></strong></p>
+        </div>
+        <div th:if="${favorites != null and !favorites.isEmpty()}" class="mt-2">
+          <strong>Favorites</strong>
+          <ul style="margin:0.5rem 0 0;padding-left:1.2rem;"><li th:each="f : ${favorites}" th:text="${f.product.name}"></li></ul>
+        </div>
         <div class="form-group"><label>Password</label><p style="margin:0;">••••••••</p></div>
         <div class="flex flex-wrap gap-sm mt-3">
           <a th:href="@{${backUrl}}" class="btn btn-outline">Back</a>
           <a href="/customer/profile/edit" class="btn btn-primary">Edit profile</a>
+          <a href="/account/2fa/setup" class="btn btn-outline">Two-factor auth</a>
         </div>
       </div>
     </div>

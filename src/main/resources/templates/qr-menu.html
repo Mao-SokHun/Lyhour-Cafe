@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body>
+<div th:replace="~{fragments/guest-header :: guest-header}"></div>
+<main class="page">
+  <div class="container">
+    <div class="card mb-2" style="text-align:center;padding:1.25rem;">
+      <span class="text-muted" style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.06em;">Scan · Order · Pay</span>
+      <h1 class="page-title" style="margin:0.35rem 0;">Table <span th:text="${table.tableNumber}"></span></h1>
+      <p class="text-muted mb-2">Add items → send to kitchen → pay when ready</p>
+      <div class="flex justify-center gap-2 flex-wrap" style="font-size:0.82rem;color:var(--text-muted);">
+        <span><i class="fa-solid fa-qrcode"></i> 1 Menu</span>
+        <span>→</span>
+        <span><i class="fa-solid fa-bag-shopping"></i> 2 Cart</span>
+        <span>→</span>
+        <span><i class="fa-solid fa-kitchen-set"></i> 3 Kitchen</span>
+        <span>→</span>
+        <span><i class="fa-solid fa-money-bill"></i> 4 Pay</span>
+      </div>
+      <a th:href="@{'/signin?redirect=/qr/' + ${table.qrCode}}" class="btn btn-outline btn-sm mt-2">Sign in for rewards</a>
+    </div>
+    <div th:replace="~{fragments/product-menu :: product-menu}"></div>
+  </div>
+</main>
+<a href="/cart" id="qr-cart-fab" class="btn btn-primary" style="position:fixed;bottom:1.25rem;right:1.25rem;z-index:50;border-radius:999px;padding:0.85rem 1.25rem;box-shadow:0 8px 24px rgba(0,0,0,0.2);">
+  <i class="fa-solid fa-bag-shopping"></i> Bag <span id="qr-cart-count" class="cart-count-badge hidden">0</span>
+</a>
+<script th:inline="javascript">
+  window.QR_TABLE_ID = [[${table.id}]];
+  window.QR_TABLE_NUMBER = [[${table.tableNumber}]];
+  if (window.QR_TABLE_ID) {
+    localStorage.setItem('qrTableId', window.QR_TABLE_ID);
+    localStorage.setItem('qrTableNumber', window.QR_TABLE_NUMBER);
+  }
+</script>
+<script src="/javascript/ui.js"></script>
+<script src="/javascript/addcart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const count = cart.reduce((s, i) => s + i.quantity, 0);
+    const badge = document.getElementById('qr-cart-count');
+    if (count > 0 && badge) {
+      badge.textContent = count;
+      badge.classList.remove('hidden');
+    }
+  });
+</script>
+</body>
+</html>

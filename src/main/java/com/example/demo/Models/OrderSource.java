@@ -2,5 +2,6 @@ package com.example.demo.Models;
 
 public enum OrderSource {
     ONLINE,
-    IN_SHOP
+    IN_SHOP,
+    QR_TABLE
 }

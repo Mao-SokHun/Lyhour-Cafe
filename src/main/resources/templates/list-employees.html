@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <div class="admin-topbar"><div><h1>Employees</h1><p class="page-subtitle">Profiles, attendance, schedules</p></div></div>
+    <div class="table-wrap mb-3">
+      <table><thead><tr><th>Staff</th><th>Role</th><th>Clock</th></tr></thead>
+      <tbody><tr th:each="u : ${staff}">
+        <td th:text="${u.username}"></td><td th:text="${u.role}"></td>
+        <td class="flex gap-sm">
+          <form th:action="@{/admin/employees/clock-in}" method="post"><input type="hidden" name="userId" th:value="${u.id}"><button class="btn btn-ghost btn-sm">In</button></form>
+          <form th:action="@{/admin/employees/clock-out}" method="post"><input type="hidden" name="userId" th:value="${u.id}"><button class="btn btn-ghost btn-sm">Out</button></form>
+        </td>
+      </tr></tbody></table>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>User</th><th>Clock in</th><th>Clock out</th></tr></thead>
+    <tbody><tr th:each="a : ${attendance}"><td th:text="${a.user.username}"></td><td th:text="${#temporals.format(a.clockIn,'HH:mm dd/MM')}"></td>
+    <td th:text="${a.clockOut != null ? #temporals.format(a.clockOut,'HH:mm dd/MM') : '—'}"></td></tr></tbody></table></div>
+  </main>
+</div>
+</body>
+</html>

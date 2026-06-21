@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <button type="button" class="btn btn-outline admin-mobile-toggle" id="admin-sidebar-toggle"><i class="fa-solid fa-bars"></i> Menu</button>
+    <div class="admin-topbar flex justify-between items-center flex-wrap gap-sm">
+      <div><h1>Kitchen display</h1><p class="page-subtitle">Active orders — update status as you go</p></div>
+      <button type="button" class="btn btn-outline" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+    </div>
+
+    <div th:if="${param.updated}" class="card card-flat mb-2" style="background:var(--success-bg);color:var(--success);padding:0.75rem 1rem;">Order updated.</div>
+
+    <div th:if="${#lists.isEmpty(orders)}" class="empty-state card">
+      <h2>No active orders</h2>
+      <p class="text-muted mt-1">New orders will appear here automatically.</p>
+    </div>
+
+    <div class="kitchen-grid" th:unless="${#lists.isEmpty(orders)}">
+      <div class="card kitchen-card" th:each="order : ${orders}">
+        <div class="flex justify-between items-start">
+          <div>
+            <strong th:text="'#' + ${order.id}">#1</strong>
+            <span class="badge badge-pending ml-1" th:text="${order.status}">PENDING</span>
+            <span th:if="${order.source.name() == 'QR_TABLE'}" class="badge badge-preparing ml-1">QR</span>
+          </div>
+          <span class="text-muted" style="font-size:0.85rem;" th:text="${#temporals.format(order.orderDate, 'HH:mm')}">12:00</span>
+        </div>
+        <p class="text-muted" style="margin:0.35rem 0 0.75rem;font-size:0.88rem;" th:text="${order.username}">customer</p>
+        <ul class="kitchen-items">
+          <li th:each="item : ${order.orderItems}">
+            <span th:text="${item.quantity} + '× ' + ${item.name_product}"></span>
+            <span th:if="${item.size != null}" class="text-muted" th:text="'(' + ${item.size} + ')'"></span>
+            <span th:if="${item.note != null and !item.note.isEmpty()}" class="kitchen-note" th:text="${item.note}"></span>
+          </li>
+        </ul>
+        <div th:if="${order.cafeTable != null}" class="text-muted" style="font-size:0.85rem;margin-bottom:0.75rem;">
+          Table <span th:text="${order.cafeTable.tableNumber}"></span>
+        </div>
+        <form th:action="@{/admin/kitchen/orders/{id}/status(id=${order.id})}" method="post" class="flex gap-sm items-end">
+          <div class="form-group" style="margin:0;flex:1;">
+            <label>Status</label>
+            <select name="status" class="select">
+              <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${s == order.status}"></option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script src="/javascript/ui.js"></script>
+<script>
+  const socket = new SockJS('/ws');
+  const stomp = Stomp.over(socket);
+  stomp.connect({}, () => {
+    stomp.subscribe('/topic/kitchen/orders', () => {
+      try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGWi77+efTRAMUKfj8LZjHAY4kdfyzHksBSR3x/DdkEAKFF606euoVRQKRp/g8r5sIQUrgc7y2Yk2CBlou+/nn00QDFCn4/C2YxwGOJHX8sx5LAUkd8fw3ZBAC'); } catch(e) {}
+      location.reload();
+    });
+  });
+</script>
+<style>
+  .kitchen-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; }
+  .kitchen-card { padding:1rem; }
+  .kitchen-items { list-style:none; padding:0; margin:0 0 0.75rem; display:grid; gap:0.35rem; }
+  .kitchen-items li { font-weight:600; font-size:0.95rem; }
+  .kitchen-note { display:block; font-weight:400; font-style:italic; font-size:0.82rem; color:var(--text-muted); }
+</style>
+</body>
+</html>

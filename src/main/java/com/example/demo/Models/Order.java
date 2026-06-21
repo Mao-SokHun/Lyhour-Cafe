@@ -28,6 +28,35 @@ public class Order {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal subtotal = BigDecimal.ZERO;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal taxAmount = BigDecimal.ZERO;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal discountAmount = BigDecimal.ZERO;
+
+    private String couponCode;
+
+    @Column(nullable = false)
+    private int loyaltyPointsEarned = 0;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cafe_table_id")
+    private CafeTable cafeTable;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private FulfillmentType fulfillmentType = FulfillmentType.PICKUP;
+
+    private String deliveryAddress;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal deliveryFee = BigDecimal.ZERO;
+
+    private Integer estimatedPrepMinutes;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
@@ -158,5 +187,26 @@ public class Order {
     public void setBranch(Branch branch) {
         this.branch = branch;
     }
+
+    public BigDecimal getSubtotal() { return subtotal; }
+    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
+    public BigDecimal getTaxAmount() { return taxAmount; }
+    public void setTaxAmount(BigDecimal taxAmount) { this.taxAmount = taxAmount; }
+    public BigDecimal getDiscountAmount() { return discountAmount; }
+    public void setDiscountAmount(BigDecimal discountAmount) { this.discountAmount = discountAmount; }
+    public String getCouponCode() { return couponCode; }
+    public void setCouponCode(String couponCode) { this.couponCode = couponCode; }
+    public int getLoyaltyPointsEarned() { return loyaltyPointsEarned; }
+    public void setLoyaltyPointsEarned(int loyaltyPointsEarned) { this.loyaltyPointsEarned = loyaltyPointsEarned; }
+    public CafeTable getCafeTable() { return cafeTable; }
+    public void setCafeTable(CafeTable cafeTable) { this.cafeTable = cafeTable; }
+    public FulfillmentType getFulfillmentType() { return fulfillmentType; }
+    public void setFulfillmentType(FulfillmentType fulfillmentType) { this.fulfillmentType = fulfillmentType; }
+    public String getDeliveryAddress() { return deliveryAddress; }
+    public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
+    public BigDecimal getDeliveryFee() { return deliveryFee; }
+    public void setDeliveryFee(BigDecimal deliveryFee) { this.deliveryFee = deliveryFee; }
+    public Integer getEstimatedPrepMinutes() { return estimatedPrepMinutes; }
+    public void setEstimatedPrepMinutes(Integer estimatedPrepMinutes) { this.estimatedPrepMinutes = estimatedPrepMinutes; }
 
 }

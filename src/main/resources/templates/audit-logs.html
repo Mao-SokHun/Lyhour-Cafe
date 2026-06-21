@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <button type="button" class="btn btn-outline admin-mobile-toggle" id="admin-sidebar-toggle"><i class="fa-solid fa-bars"></i> Menu</button>
+    <div class="admin-topbar"><div><h1>Audit log</h1><p class="page-subtitle">Recent staff actions</p></div></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr th:each="log : ${logs}">
+            <td th:text="${#temporals.format(log.createdAt, 'dd MMM yyyy HH:mm:ss')}"></td>
+            <td th:text="${log.username}"></td>
+            <td><span class="badge badge-inshop" th:text="${log.action}"></span></td>
+            <td th:text="${log.details}"></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(logs)}"><td colspan="4" class="text-muted">No audit entries yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script src="/javascript/ui.js"></script>
+</body>
+</html>

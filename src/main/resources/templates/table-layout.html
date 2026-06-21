@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <div class="admin-topbar"><div><h1>Table layout</h1><p class="page-subtitle">Merge, split, transfer</p></div></div>
+    <div class="table-layout-grid mb-3">
+      <div th:each="t : ${tables}" class="card table-tile" th:style="'left:' + ${t.layoutX} + 'px;top:' + ${t.layoutY} + 'px;'"
+           th:classappend="${t.status.name() == 'AVAILABLE'} ? ' available' : ' occupied'">
+        <strong th:text="${t.tableNumber}"></strong>
+        <span class="badge" th:text="${t.status}"></span>
+        <small th:if="${t.qrCode != null}" th:text="'QR: ' + ${t.qrCode}"></small>
+      </div>
+    </div>
+    <div class="card grid-2">
+      <form th:action="@{/admin/tables/merge}" method="post"><label>Merge into target</label>
+        <div class="flex gap-sm mt-1"><select name="targetId" class="select"><option th:each="t : ${tables}" th:value="${t.id}" th:text="${t.tableNumber}"></option></select>
+        <select name="sourceId" class="select"><option th:each="t : ${tables}" th:value="${t.id}" th:text="${t.tableNumber}"></option></select>
+        <button class="btn btn-primary btn-sm">Merge</button></div></form>
+      <form th:action="@{/admin/tables/split}" method="post"><label>Split table</label>
+        <div class="flex gap-sm mt-1"><select name="tableId" class="select"><option th:each="t : ${tables}" th:value="${t.id}" th:text="${t.tableNumber}"></option></select>
+        <button class="btn btn-outline btn-sm">Split</button></div></form>
+      <form th:action="@{/admin/tables/transfer}" method="post"><label>Transfer</label>
+        <div class="flex gap-sm mt-1"><select name="fromId" class="select"><option th:each="t : ${tables}" th:value="${t.id}" th:text="${t.tableNumber}"></option></select>
+        <span>→</span><select name="toId" class="select"><option th:each="t : ${tables}" th:value="${t.id}" th:text="${t.tableNumber}"></option></select>
+        <button class="btn btn-outline btn-sm">Transfer</button></div></form>
+    </div>
+  </main>
+</div>
+<style>.table-layout-grid{position:relative;min-height:320px;background:var(--surface-2);border-radius:12px;padding:1rem;}
+.table-tile{position:absolute;width:100px;padding:0.75rem;text-align:center;}</style>
+</body>
+</html>

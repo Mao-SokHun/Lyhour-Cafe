@@ -9,10 +9,17 @@
         <div style="width:72px;height:72px;margin:0 auto 1rem;border-radius:50%;background:#d8f3e5;color:var(--success);display:grid;place-items:center;font-size:2rem;">
           <i class="fa-solid fa-check"></i>
         </div>
-        <h1 class="page-title">Order placed</h1>
+        <h1 class="page-title" th:if="${qrTableOrder}">Sent to kitchen</h1>
+        <h1 class="page-title" th:unless="${qrTableOrder}">Order placed</h1>
         <p class="page-subtitle" th:if="${stripePaid}">Payment received via Stripe. We're preparing your drinks.</p>
-        <p class="page-subtitle" th:unless="${stripePaid}">We're preparing your drinks. You'll get updates in your order history.</p>
-        <a href="/index#product-menu" class="btn btn-primary mt-3">Order more</a>
+        <p class="page-subtitle" th:if="${qrTableOrder and order != null and !stripePaid}">
+          Order #<span th:text="${order.id}"></span>
+          <span th:if="${order.cafeTable != null}"> · Table <span th:text="${order.cafeTable.tableNumber}"></span></span>
+          <br>Your order is with the kitchen. Pay at the table when ready, or ask staff to mark paid.
+        </p>
+        <p class="page-subtitle" th:unless="${qrTableOrder or stripePaid}">We're preparing your drinks. You'll get updates in your order history.</p>
+        <a th:if="${qrTableOrder and order != null and order.cafeTable != null}" th:href="@{'/qr/' + ${order.cafeTable.qrCode}}" class="btn btn-primary mt-3">Order more</a>
+        <a th:unless="${qrTableOrder}" href="/index#product-menu" class="btn btn-primary mt-3">Order more</a>
         <a href="/customer/orders" class="btn btn-outline mt-2" style="margin-left:0.5rem;">View orders</a>
       </div>
     </div>
@@ -20,7 +27,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('clear') === 'true' || params.get('session_id')) {
+      if (params.get('clear') === 'true' || params.get('session_id') || params.get('qr') === '1') {
         localStorage.removeItem('cart');
       }
     });

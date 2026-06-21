@@ -51,27 +51,26 @@ public class StripePaymentService {
                 .putMetadata("orderId", String.valueOf(order.getId()))
                 .putMetadata("username", order.getUsername());
 
-        for (OrderItem item : order.getOrderItems()) {
-            String label = item.getName_product();
-            if (item.getSize() != null && !item.getSize().isBlank()) {
-                label += " (" + item.getSize() + ")";
-            }
-            long unitAmount = toStripeAmount(item.getPriceAtTimeOfOrder());
-
-            params.addLineItem(
-                    SessionCreateParams.LineItem.builder()
-                            .setQuantity((long) item.getQuantity())
-                            .setPriceData(
-                                    SessionCreateParams.LineItem.PriceData.builder()
-                                            .setCurrency("usd")
-                                            .setUnitAmount(unitAmount)
-                                            .setProductData(
-                                                    SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                            .setName(label)
-                                                            .build())
-                                            .build())
-                            .build());
+        long totalCents = toStripeAmount(order.getTotalPrice());
+        String description = "Order #" + order.getId();
+        if (order.getDiscountAmount() != null && order.getDiscountAmount().compareTo(BigDecimal.ZERO) > 0) {
+            description += " (includes discount)";
         }
+
+        params.addLineItem(
+                SessionCreateParams.LineItem.builder()
+                        .setQuantity(1L)
+                        .setPriceData(
+                                SessionCreateParams.LineItem.PriceData.builder()
+                                        .setCurrency("usd")
+                                        .setUnitAmount(totalCents)
+                                        .setProductData(
+                                                SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                        .setName("Lyhour Coffee — " + description)
+                                                        .setDescription(buildItemSummary(order))
+                                                        .build())
+                                        .build())
+                        .build());
 
         try {
             Session session = Session.create(params.build());
@@ -109,5 +108,14 @@ public class StripePaymentService {
         return dollars.multiply(BigDecimal.valueOf(100))
                 .setScale(0, RoundingMode.HALF_UP)
                 .longValueExact();
+    }
+
+    private String buildItemSummary(Order order) {
+        StringBuilder sb = new StringBuilder();
+        for (OrderItem item : order.getOrderItems()) {
+            if (!sb.isEmpty()) sb.append(", ");
+            sb.append(item.getQuantity()).append("x ").append(item.getName_product());
+        }
+        return sb.toString();
     }
 }

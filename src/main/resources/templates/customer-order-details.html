@@ -35,9 +35,28 @@
           <strong th:text="'$' + ${#numbers.formatDecimal(item.priceAtTimeOfOrder * item.quantity, 1, 2)}"></strong>
         </div>
 
-        <div class="flex justify-between mt-3" style="font-size:1.2rem;font-weight:700;">
-          <span>Total</span>
-          <span style="color:var(--accent-dark);" th:text="'$' + ${#numbers.formatDecimal(order.totalPrice, 1, 2)}"></span>
+        <div class="order-summary mt-3" style="display:grid;gap:0.4rem;">
+          <div class="flex justify-between text-muted"><span>Subtotal</span><span th:text="'$' + ${#numbers.formatDecimal(order.subtotal, 1, 2)}"></span></div>
+          <div th:if="${order.discountAmount != null and order.discountAmount > 0}" class="flex justify-between text-muted">
+            <span>Discount<span th:if="${order.couponCode != null}" th:text="' (' + ${order.couponCode} + ')'"></span></span>
+            <span th:text="'-$' + ${#numbers.formatDecimal(order.discountAmount, 1, 2)}"></span>
+          </div>
+          <div class="flex justify-between text-muted"><span>Tax</span><span th:text="'$' + ${#numbers.formatDecimal(order.taxAmount, 1, 2)}"></span></div>
+          <div class="flex justify-between" style="font-size:1.2rem;font-weight:700;">
+            <span>Total</span>
+            <span style="color:var(--accent-dark);" th:text="'$' + ${#numbers.formatDecimal(order.totalPrice, 1, 2)}"></span>
+          </div>
+          <p th:if="${order.loyaltyPointsEarned > 0}" class="text-muted" style="font-size:0.88rem;margin:0;">
+            Loyalty points earned: <strong th:text="${order.loyaltyPointsEarned}"></strong>
+          </p>
+          <p class="text-muted" style="font-size:0.88rem;margin:0;">
+            Payment: <span th:text="${order.paymentMethod}"></span> · <span th:text="${order.paymentStatus}"></span>
+            <span th:if="${order.cafeTable != null}"> · Table <span th:text="${order.cafeTable.tableNumber}"></span></span>
+          </p>
+        </div>
+
+        <div th:if="${isAdminView}" class="flex gap-sm mt-2 no-print">
+          <a th:href="@{/admin/orders/{id}/receipt(id=${order.id})}" class="btn btn-outline btn-sm"><i class="fa-solid fa-print"></i> Receipt</a>
         </div>
 
         <div th:if="${isAdminView}" class="card card-flat mt-3" style="background:var(--surface-2);">

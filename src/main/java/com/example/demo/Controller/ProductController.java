@@ -33,8 +33,14 @@ public class ProductController {
         model.addAttribute("preparingOrders", dashboardService.getPreparingOrders());
         model.addAttribute("todayOrders", dashboardService.getTodayOrderCount());
         model.addAttribute("todayRevenue", dashboardService.getTodayRevenue());
+        model.addAttribute("weekRevenue", dashboardService.getWeekRevenue());
+        model.addAttribute("monthRevenue", dashboardService.getMonthRevenue());
         model.addAttribute("lowStockItems", dashboardService.getLowStockCount());
         model.addAttribute("lowStockProducts", productRepository.findByStockLessThanEqualOrderByStockAsc(10));
+        model.addAttribute("bestSellers", dashboardService.getBestSellingProducts());
+        model.addAttribute("topCustomers", dashboardService.getTopCustomers());
+        model.addAttribute("chartData", dashboardService.getDailyRevenueChart());
+        model.addAttribute("availableTables", dashboardService.getAvailableTables());
         return "dashboard";
     }
 

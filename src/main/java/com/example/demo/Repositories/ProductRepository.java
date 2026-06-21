@@ -13,4 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     long countByStockLessThanEqual(int stock);
 
     List<Product> findByStockLessThanEqualOrderByStockAsc(int stock);
+
+    java.util.Optional<Product> findByBarcode(String barcode);
 }

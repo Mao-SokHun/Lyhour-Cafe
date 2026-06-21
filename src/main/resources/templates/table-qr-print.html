@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="'Table ' + ${table.tableNumber} + ' QR'">Table QR</title>
+  <style>
+    body { font-family: system-ui, sans-serif; text-align: center; padding: 2rem; }
+    img { width: 280px; height: 280px; }
+    @media print { .no-print { display: none; } }
+  </style>
+</head>
+<body onload="window.print()">
+  <h1>Lyhour Coffee</h1>
+  <h2 th:text="'Table ' + ${table.tableNumber}">Table T1</h2>
+  <p>Scan to order · Pay at table</p>
+  <img th:src="@{'/admin/tables/' + ${table.id} + '/qr.png'}" alt="QR code">
+  <p th:text="${menuUrl}" style="font-size:0.75rem;color:#666;word-break:break-all;"></p>
+  <button class="no-print" onclick="window.print()">Print</button>
+</body>
+</html>

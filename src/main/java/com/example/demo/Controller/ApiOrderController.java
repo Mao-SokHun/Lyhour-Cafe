@@ -66,16 +66,13 @@ public class ApiOrderController {
                 : PaymentMethod.PAY_AT_PICKUP;
 
         try {
-            if (method == PaymentMethod.STRIPE) {
-                CheckoutService.CheckoutResult result = checkoutService.checkout(customer, request);
+            CheckoutService.CheckoutResult result = checkoutService.checkout(customer, request);
+            if (result.redirectUrl() != null && !result.redirectUrl().isBlank()) {
                 return ResponseEntity.ok(new CheckoutResponse(
                         OrderResponse.from(result.order()),
                         result.redirectUrl()));
             }
-            var order = orderService.createOrder(
-                    customer, request.getItems(),
-                    com.example.demo.Models.OrderSource.ONLINE, method);
-            return ResponseEntity.ok(OrderResponse.from(order));
+            return ResponseEntity.ok(OrderResponse.from(result.order()));
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }

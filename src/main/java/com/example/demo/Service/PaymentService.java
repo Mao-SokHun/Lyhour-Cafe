@@ -25,10 +25,15 @@ public class PaymentService {
                 order.setPaymentStatus(PaymentStatus.PENDING);
                 order.setPaymentReference(null);
             }
-            case STRIPE -> {
+            case STRIPE, BAKONG, ABA, KHQR, WING, ACLEDA -> {
                 order.setPaymentStatus(PaymentStatus.PENDING);
                 order.setPaymentReference(null);
             }
         }
+    }
+
+    public void markKhPaid(Order order, String reference) {
+        order.setPaymentReference(reference);
+        order.setPaymentStatus(PaymentStatus.PAID);
     }
 }

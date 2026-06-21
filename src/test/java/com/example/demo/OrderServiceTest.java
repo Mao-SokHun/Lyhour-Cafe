@@ -45,12 +45,11 @@ class OrderServiceTest {
         item.setPrice(BigDecimal.valueOf(product.getPrice()));
 
         var order = orderService.createOrder(customer, List.of(item),
-                com.example.demo.Models.OrderSource.ONLINE, PaymentMethod.ONLINE_MOCK);
+                com.example.demo.Models.OrderSource.ONLINE, PaymentMethod.PAY_AT_PICKUP);
 
         assertNotNull(order.getId());
-        assertEquals(PaymentMethod.ONLINE_MOCK, order.getPaymentMethod());
-        assertEquals(com.example.demo.Models.PaymentStatus.PAID, order.getPaymentStatus());
-        assertNotNull(order.getPaymentReference());
+        assertEquals(PaymentMethod.PAY_AT_PICKUP, order.getPaymentMethod());
+        assertEquals(com.example.demo.Models.PaymentStatus.PENDING, order.getPaymentStatus());
 
         Product updated = productRepository.findById(product.getId()).orElseThrow();
         assertEquals(initialStock - 1, updated.getStock());

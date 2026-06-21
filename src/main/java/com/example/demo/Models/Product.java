@@ -15,6 +15,14 @@ public class Product {
     private String category;
     private String imageUrl;
 
+    private String sku;
+    private String barcode;
+
+    private Double costPrice;
+
+    @Column(nullable = false)
+    private boolean available = true;
+
     @Column(nullable = false)
     private int stock = 100;
 
@@ -34,13 +42,21 @@ public class Product {
     public void setCategory(String category) { this.category = category; }
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getSku() { return sku; }
+    public void setSku(String sku) { this.sku = sku; }
+    public String getBarcode() { return barcode; }
+    public void setBarcode(String barcode) { this.barcode = barcode; }
+    public Double getCostPrice() { return costPrice; }
+    public void setCostPrice(Double costPrice) { this.costPrice = costPrice; }
+    public boolean isAvailable() { return available; }
+    public void setAvailable(boolean available) { this.available = available; }
     public int getStock() { return stock; }
     public void setStock(int stock) { this.stock = stock; }
     public Branch getBranch() { return branch; }
     public void setBranch(Branch branch) { this.branch = branch; }
 
     public boolean isInStock() {
-        return stock > 0;
+        return available && stock > 0;
     }
 
     public boolean isLowStock() {

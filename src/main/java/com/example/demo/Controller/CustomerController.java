@@ -4,6 +4,7 @@ import com.example.demo.Models.Order;
 import com.example.demo.Models.User;
 import com.example.demo.Repositories.OrderRepository;
 import com.example.demo.Repositories.UserRepository;
+import com.example.demo.Service.CustomerService;
 
 import java.util.List;
 
@@ -28,6 +29,9 @@ public class CustomerController {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private CustomerService customerService;
+
     // Show Profile
     @GetMapping("/profile")
     public String showProfile(@RequestHeader(value = "Referer", required = false) String referer,
@@ -35,6 +39,7 @@ public class CustomerController {
         String username = authentication.getName(); 
         User user = userRepository.findByUsername(username);
         model.addAttribute("user", user);
+        model.addAttribute("favorites", customerService.getFavorites(user));
 
         String backUrl = "/index";
         if (referer != null && referer.contains("/cart")) {
@@ -102,5 +107,12 @@ public class CustomerController {
 
         model.addAttribute("order", order);
         return "customer-order-details";
-    }     
+    }
+
+    @PostMapping("/favorites/toggle")
+    public String toggleFavorite(@RequestParam Long productId, Authentication authentication) {
+        User user = userRepository.findByUsername(authentication.getName());
+        customerService.toggleFavorite(user, productId);
+        return "redirect:/index#product-menu";
+    }
 }

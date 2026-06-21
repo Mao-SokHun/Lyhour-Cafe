@@ -1,0 +1,11 @@
+{
+  "name": "Lyhour Coffee",
+  "short_name": "Lyhour",
+  "description": "Order coffee & cake — install for app-like experience",
+  "start_url": "/home",
+  "display": "standalone",
+  "background_color": "#1a1410",
+  "theme_color": "#c67b4a",
+  "orientation": "portrait",
+  "icons": []
+}

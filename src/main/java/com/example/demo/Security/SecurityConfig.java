@@ -52,6 +52,10 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    private final RateLimitFilter rateLimitFilter;
+
+    private final TwoFactorAuthenticationFilter twoFactorAuthenticationFilter;
+
 
 
     public SecurityConfig(
@@ -60,13 +64,21 @@ public class SecurityConfig {
 
             CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
 
-            JwtAuthenticationFilter jwtAuthenticationFilter) {
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+
+            RateLimitFilter rateLimitFilter,
+
+            TwoFactorAuthenticationFilter twoFactorAuthenticationFilter) {
 
         this.userService = userService;
 
         this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
 
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+
+        this.rateLimitFilter = rateLimitFilter;
+
+        this.twoFactorAuthenticationFilter = twoFactorAuthenticationFilter;
 
     }
 
@@ -84,9 +96,15 @@ public class SecurityConfig {
 
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
+            .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+
+            .addFilterAfter(twoFactorAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
             .authorizeHttpRequests(auth -> auth
 
                 .requestMatchers("/api/v1/auth/**").permitAll()
+
+                .requestMatchers("/api/v1/mobile/config").permitAll()
 
                 .requestMatchers("/api/v1/stripe/webhook", "/api/v1/payments/stripe/status").permitAll()
 
@@ -96,13 +114,17 @@ public class SecurityConfig {
 
                 .requestMatchers("POST", "/api/v1/reservations").permitAll()
 
-                .requestMatchers("/admin/**", "/dashboard/**", "/products/**", "/users/**").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers("/admin/**", "/dashboard/**", "/products/**", "/users/**")
+                        .hasAnyRole("ADMIN", "MANAGER", "CASHIER", "KITCHEN", "OWNER", "SUPER_ADMIN", "WAITER")
 
                 .requestMatchers("/index", "/customer/**", "/order/success", "/api/v1/**").authenticated()
 
                 .requestMatchers("/", "/home", "/signup", "/signin", "/signout", "/cart", "/order/checkout",
+                        "/order/khqr-pay", "/reservations", "/qr/**", "/forgot-password", "/reset-password",
+                        "/manifest.json", "/sw.js",
+                        "/css/**", "/javascript/**", "/images/**", "/h2-console/**", "/ws/**").permitAll()
 
-                        "/reservations", "/css/**", "/javascript/**", "/images/**", "/h2-console/**").permitAll()
+                .requestMatchers("/2fa", "/2fa/**", "/account/2fa/**").authenticated()
 
                 .anyRequest().authenticated()
 

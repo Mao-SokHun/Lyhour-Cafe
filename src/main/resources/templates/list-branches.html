@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <div class="admin-topbar"><div><h1>Branches</h1></div></div>
+    <div class="card mb-3">
+      <form th:action="@{/admin/branches/save}" th:object="${branch}" method="post" class="grid-2">
+        <div class="form-group"><label>Name</label><input class="input" th:field="*{name}" required></div>
+        <div class="form-group"><label>Phone</label><input class="input" th:field="*{phone}"></div>
+        <div class="form-group" style="grid-column:1/-1;"><label>Address</label><input class="input" th:field="*{address}"></div>
+        <button type="submit" class="btn btn-primary">Save branch</button>
+      </form>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Name</th><th>Address</th><th>Phone</th><th>Active</th></tr></thead>
+    <tbody><tr th:each="b : ${branches}"><td th:text="${b.name}"></td><td th:text="${b.address}"></td><td th:text="${b.phone}"></td><td th:text="${b.active}"></td></tr></tbody></table></div>
+  </main>
+</div>
+</body>
+</html>

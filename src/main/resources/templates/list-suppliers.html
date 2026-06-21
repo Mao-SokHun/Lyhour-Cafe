@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <div class="admin-topbar"><div><h1>Suppliers & PO</h1></div></div>
+    <div class="card mb-3"><h3>Add supplier</h3>
+      <form th:action="@{/admin/suppliers/save}" method="post" class="grid-2 mt-2">
+        <div class="form-group"><label>Name</label><input class="input" name="name" required></div>
+        <div class="form-group"><label>Phone</label><input class="input" name="phone"></div>
+        <div class="form-group"><label>Email</label><input class="input" name="email"></div>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </form>
+    </div>
+    <div class="table-wrap mb-3">
+      <table><thead><tr><th>Supplier</th><th>Contact</th><th>Balance</th></tr></thead>
+      <tbody><tr th:each="s : ${suppliers}"><td th:text="${s.name}"></td><td th:text="${s.phone}"></td><td th:text="'$' + ${s.outstandingBalance}"></td></tr></tbody></table>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>PO#</th><th>Supplier</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <tr th:each="po : ${orders}">
+          <td th:text="'#' + ${po.id}"></td><td th:text="${po.supplier.name}"></td><td th:text="${po.orderDate}"></td>
+          <td th:text="'$' + ${po.totalAmount}"></td><td th:text="${po.status}"></td>
+          <td><form th:if="${po.status.name() != 'RECEIVED'}" th:action="@{/admin/suppliers/orders/receive}" method="post">
+            <input type="hidden" name="orderId" th:value="${po.id}"><button class="btn btn-ghost btn-sm">Receive</button></form></td>
+        </tr>
+      </tbody></table>
+    </div>
+  </main>
+</div>
+</body>
+</html>

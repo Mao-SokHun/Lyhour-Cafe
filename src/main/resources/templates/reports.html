@@ -6,13 +6,35 @@
   <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
   <main class="admin-main">
     <button type="button" class="btn btn-outline admin-mobile-toggle" id="admin-sidebar-toggle"><i class="fa-solid fa-bars"></i> Menu</button>
-    <div class="admin-topbar"><div><h1>Reports</h1><p class="page-subtitle">Sales performance</p></div></div>
+    <div class="admin-topbar flex justify-between items-center flex-wrap gap-sm">
+      <div><h1>Reports</h1><p class="page-subtitle">Sales performance</p></div>
+      <div class="flex gap-sm">
+        <a href="/admin/reports/export/sales" class="btn btn-outline"><i class="fa-solid fa-download"></i> Sales CSV</a>
+        <a href="/admin/reports/export/sales.pdf" class="btn btn-outline"><i class="fa-solid fa-file-pdf"></i> Sales PDF</a>
+        <a href="/admin/reports/export/summary.pdf" class="btn btn-outline"><i class="fa-solid fa-file-pdf"></i> Summary PDF</a>
+      </div>
+    </div>
 
     <div class="stat-grid">
       <div class="stat-card"><div class="label">Orders today</div><div class="value" th:text="${todayOrders}">0</div></div>
       <div class="stat-card"><div class="label">Orders this week</div><div class="value" th:text="${weekOrders}">0</div></div>
       <div class="stat-card accent"><div class="label">Revenue today</div><div class="value" th:text="'$' + ${#numbers.formatDecimal(todayRevenue, 1, 2)}">$0</div></div>
+      <div class="stat-card"><div class="label">Week revenue</div><div class="value" th:text="'$' + ${#numbers.formatDecimal(weekRevenue, 1, 2)}">$0</div></div>
+      <div class="stat-card"><div class="label">Month revenue</div><div class="value" th:text="'$' + ${#numbers.formatDecimal(monthRevenue, 1, 2)}">$0</div></div>
       <div class="stat-card"><div class="label">Total revenue</div><div class="value" th:text="'$' + ${#numbers.formatDecimal(totalRevenue, 1, 2)}">$0</div></div>
+      <div class="stat-card"><div class="label">Pending</div><div class="value" th:text="${pendingOrders}">0</div></div>
+      <div class="stat-card"><div class="label">Preparing</div><div class="value" th:text="${preparingOrders}">0</div></div>
+      <div class="stat-card"><div class="label">Tables free</div><div class="value" th:text="${availableTables}">0</div></div>
+    </div>
+
+    <div class="card mb-3" th:if="${bestSellers != null and !bestSellers.isEmpty()}">
+      <h3>Top products</h3>
+      <ul style="list-style:none;padding:0;margin:0.75rem 0 0;">
+        <li th:each="row, stat : ${bestSellers}" class="flex justify-between" style="padding:0.35rem 0;border-bottom:1px solid var(--border);">
+          <span th:text="${stat.count} + '. ' + ${row[0]}"></span>
+          <span class="text-muted" th:text="${row[1]} + ' sold'"></span>
+        </li>
+      </ul>
     </div>
 
     <div class="table-wrap">

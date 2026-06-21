@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <div class="admin-topbar"><div><h1>Settings</h1></div></div>
+
+    <div th:if="${param.saved}" class="alert alert-success">Setting saved.</div>
+    <div th:if="${param.backup}" class="alert alert-success">Backup completed.</div>
+    <div th:if="${param.telegram}" class="alert" th:classappend="${param.telegram[0] == 'ok' or param.telegram[0] == 'linked'} ? 'alert-success' : 'alert-danger'"
+         th:text="${param.telegram[0] == 'ok'} ? 'Telegram test sent.' : (${param.telegram[0] == 'linked'} ? 'Telegram connected — chat ID saved.' : (${param.telegram[0] == 'nomessage'} ? 'Open t.me/LyhourCafe_bot, send /start, then click Connect again.' : 'Telegram not configured — set APP_TELEGRAM_* env vars.'))"></div>
+    <div th:if="${param.push}" class="alert" th:classappend="${param.push[0] == 'ok'} ? 'alert-success' : 'alert-danger'"
+         th:text="${param.push[0] == 'ok'} ? 'Push test sent (webhook or FCM ready).' : 'Push not configured — set APP_PUSH_ENABLED and FCM or webhook.'"></div>
+
+    <div class="card mb-3">
+      <h2 class="h5 mb-2">Telegram — @LyhourCafe_bot</h2>
+      <p class="text-muted mb-2">Bot token is loaded from <code>.env</code> (local) or Render env vars. Chat ID is saved in DB after you connect.</p>
+      <table class="mb-3">
+        <tr><td>Bot</td><td><a href="https://t.me/LyhourCafe_bot" target="_blank">t.me/LyhourCafe_bot</a></td></tr>
+        <tr><td>Token</td><td th:text="${notificationStatus.telegramEnabled} ? 'Set (hidden)' : 'APP_TELEGRAM_ENABLED=false'"></td></tr>
+        <tr><td>Chat ID</td><td th:text="${telegramChatId != null and !telegramChatId.isEmpty()} ? telegramChatId : 'Not linked yet'"></td></tr>
+        <tr><td>Status</td><td th:text="${notificationStatus.telegramEnabled and notificationStatus.telegramConfigured} ? 'Ready' : 'Needs connect or env chat ID'"></td></tr>
+        <tr><td>FCM (mobile)</td><td th:text="${notificationStatus.fcmConfigured} ? 'Ready' : 'Set APP_FCM_SERVER_KEY'"></td></tr>
+        <tr><td>Push webhook</td><td th:text="${notificationStatus.webhookConfigured} ? 'Ready' : 'Optional'"></td></tr>
+      </table>
+      <ol class="text-muted mb-3" style="font-size:0.9rem">
+        <li>Open <a href="https://t.me/LyhourCafe_bot" target="_blank">@LyhourCafe_bot</a> in Telegram</li>
+        <li>Tap <strong>Start</strong> and send any message (e.g. <code>hello</code>)</li>
+        <li>Click <strong>Connect Telegram</strong> below</li>
+        <li>Click <strong>Test Telegram</strong></li>
+      </ol>
+      <div class="flex gap-2 flex-wrap">
+        <form th:action="@{/admin/notifications/connect-telegram}" method="post">
+          <button type="submit" class="btn btn-primary btn-sm">Connect Telegram</button>
+        </form>
+        <form th:action="@{/admin/notifications/test-telegram}" method="post">
+          <button type="submit" class="btn btn-outline btn-sm">Test Telegram</button>
+        </form>
+        <form th:action="@{/admin/notifications/test-push}" method="post">
+          <button type="submit" class="btn btn-outline btn-sm">Test Push</button>
+        </form>
+      </div>
+      <pre class="mt-3 text-muted" style="font-size:0.85rem"># Render production
+APP_TELEGRAM_ENABLED=true
+APP_TELEGRAM_BOT_TOKEN=...   # from @BotFather
+APP_TELEGRAM_CHAT_ID=...     # optional if you use Connect in admin</pre>
+    </div>
+
+    <div class="card mb-3">
+      <form th:action="@{/admin/settings/save}" method="post" class="grid-2">
+        <div class="form-group"><label>Key</label><input class="input" name="key" placeholder="shop.name" required></div>
+        <div class="form-group"><label>Value</label><input class="input" name="value" required></div>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </form>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Key</th><th>Value</th></tr></thead>
+    <tbody><tr th:each="s : ${settings}"><td th:text="${s.settingKey}"></td><td th:text="${s.settingValue}"></td></tr></tbody></table></div>
+    <form th:action="@{/admin/backup/run}" method="post" class="mt-3">
+      <button type="submit" class="btn btn-outline"><i class="fa-solid fa-database"></i> Run backup now</button>
+    </form>
+  </main>
+</div>
+</body>
+</html>

@@ -32,6 +32,13 @@ public class ApiProductController {
         return toResponse(product);
     }
 
+    @GetMapping("/by-barcode/{code}")
+    public ProductResponse byBarcode(@PathVariable String code) {
+        Product product = productRepository.findByBarcode(code)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found for barcode: " + code));
+        return toResponse(product);
+    }
+
     private ProductResponse toResponse(Product p) {
         return new ProductResponse(
                 p.getId(),

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <div class="admin-topbar"><div><h1>Ingredients</h1><p class="page-subtitle">Stock & recipe raw materials</p></div></div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Add / edit</h3>
+        <form th:action="@{/admin/ingredients/save}" method="post" class="mt-2">
+          <div class="form-group"><label>Name</label><input class="input" name="name" required></div>
+          <div class="grid-2">
+            <div class="form-group"><label>Unit</label><input class="input" name="unit" value="g"></div>
+            <div class="form-group"><label>Quantity</label><input class="input" type="number" step="0.001" name="quantity" value="0"></div>
+          </div>
+          <button type="submit" class="btn btn-primary mt-2">Save</button>
+        </form>
+      </div>
+      <div class="table-wrap">
+        <table><thead><tr><th>Name</th><th>Qty</th><th>Low?</th><th>Adjust</th></tr></thead>
+        <tbody>
+          <tr th:each="i : ${ingredients}">
+            <td th:text="${i.name}"></td>
+            <td th:text="${i.quantity} + ' ' + ${i.unit}"></td>
+            <td th:text="${i.lowStock} ? 'Yes' : 'No'"></td>
+            <td>
+              <form th:action="@{/admin/ingredients/{id}/adjust(id=${i.id})}" method="post" class="flex gap-sm">
+                <input type="number" step="0.001" name="amount" class="input" style="width:80px;" placeholder="+/-">
+                <select name="type" class="select"><option value="STOCK_IN">In</option><option value="STOCK_OUT">Out</option><option value="ADJUSTMENT">Adj</option></select>
+                <button class="btn btn-ghost btn-sm">Go</button>
+              </form>
+            </td>
+          </tr>
+        </tbody></table>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="/javascript/ui.js"></script>
+</body>
+</html>

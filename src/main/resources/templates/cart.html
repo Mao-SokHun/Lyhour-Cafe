@@ -12,6 +12,15 @@
       <h1 class="page-title">Your bag</h1>
       <p class="page-subtitle">Adjust sizes and notes before checkout.</p>
 
+      <div id="qr-table-banner" class="card mb-2 hidden" style="padding:1rem;background:var(--surface-2);">
+        <strong><i class="fa-solid fa-chair"></i> Table <span id="qr-table-label"></span></strong>
+        <p class="text-muted mt-1" style="font-size:0.88rem;margin-bottom:0;">Dine-in QR order — sent to kitchen first, pay at table or pay online below.</p>
+        <div class="form-group mt-2" style="margin-bottom:0;">
+          <label>Your name (optional)</label>
+          <input type="text" id="guest-name" class="input" placeholder="e.g. Sokha">
+        </div>
+      </div>
+
       <div id="cart-view" class="cart-layout">
         <div id="cart-items" class="flex" style="flex-direction:column;gap:1rem;"></div>
         <aside class="card summary-card">
@@ -19,6 +28,8 @@
           <div class="mt-2" style="display:grid;gap:0.5rem;">
             <div class="flex justify-between"><span>Items</span><span id="total-items">0</span></div>
             <div class="flex justify-between"><span>Subtotal</span><span id="subtotal-price">$0.00</span></div>
+            <div class="flex justify-between text-muted"><span>Tax (10%)</span><span id="tax-price">$0.00</span></div>
+            <div class="flex justify-between text-muted hidden" id="discount-row"><span>Discount</span><span id="discount-price">-$0.00</span></div>
             <div class="flex justify-between text-muted"><span>Pickup</span><span>Free</span></div>
             <hr style="border:none;border-top:1px solid var(--border);margin:0.5rem 0;">
             <div class="flex justify-between" style="font-weight:700;font-size:1.1rem;">
@@ -26,19 +37,46 @@
             </div>
           </div>
           <div class="form-group mt-3" style="margin-bottom:0;">
+            <label>Fulfillment</label>
+            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;">
+              <input type="radio" name="fulfillmentType" value="PICKUP" checked> Pickup
+            </label>
+            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;">
+              <input type="radio" name="fulfillmentType" value="DELIVERY"> Delivery (+$3)
+            </label>
+            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" id="dine-in-option" class="hidden">
+              <input type="radio" name="fulfillmentType" value="DINE_IN"> Dine-in (table)
+            </label>
+          </div>
+          <div class="form-group mt-2 hidden" id="delivery-address-group" style="margin-bottom:0;">
+            <label>Delivery address</label>
+            <input type="text" id="delivery-address" class="input" placeholder="Street, city…">
+          </div>
+          <div class="form-group mt-3" style="margin-bottom:0;">
+            <label>Promo code</label>
+            <input type="text" id="coupon-code" class="input" placeholder="e.g. WELCOME10" style="text-transform:uppercase;">
+          </div>
+          <div class="form-group mt-2" style="margin-bottom:0;">
             <label>Payment</label>
             <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;">
-              <input type="radio" name="paymentMethod" value="PAY_AT_PICKUP" checked> Pay at pickup
+              <input type="radio" name="paymentMethod" value="PAY_AT_PICKUP" checked> <span id="pay-at-label">Pay at pickup</span>
             </label>
             <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" th:if="${stripeEnabled}">
               <input type="radio" name="paymentMethod" value="STRIPE"> Pay with card (Stripe)
             </label>
-            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" th:unless="${stripeEnabled}">
-              <input type="radio" name="paymentMethod" value="ONLINE_MOCK"> Pay online (demo — enable Stripe in config)
+            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" th:if="${bakongEnabled}">
+              <input type="radio" name="paymentMethod" value="BAKONG"> Bakong KHQR <span th:if="${khqrDemo}" class="text-muted">(demo)</span>
             </label>
-            <label class="flex items-center gap-sm mt-1 text-muted" style="font-size:0.88rem;opacity:0.6;cursor:not-allowed;">
-              <input type="radio" name="paymentMethod" value="BAKONG" disabled> Bakong KHQR (coming soon)
+            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" th:if="${khqrEnabled}">
+              <input type="radio" name="paymentMethod" value="KHQR"> KHQR
             </label>
+            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" th:if="${abaEnabled}">
+              <input type="radio" name="paymentMethod" value="ABA"> ABA Pay
+            </label>
+            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" th:if="${wingEnabled}">
+              <input type="radio" name="paymentMethod" value="WING"> Wing
+            </label>
+            <p th:unless="${stripeEnabled}" class="text-muted mt-1" style="font-size:0.82rem;">Enable Stripe with APP_STRIPE_ENABLED on server.</p>
           </div>
           <button id="checkout-btn" class="btn btn-primary btn-block mt-3" disabled>Checkout</button>
         </aside>
@@ -62,7 +100,30 @@
       const emptyCartMessage = document.getElementById('empty-cart');
       const totalItemsEl = document.getElementById('total-items');
       const subtotalPriceEl = document.getElementById('subtotal-price');
+      const taxPriceEl = document.getElementById('tax-price');
       const totalPriceEl = document.getElementById('total-price');
+      const TAX_RATE = 0.10;
+      const DELIVERY_FEE = 3.00;
+      const qrTableId = localStorage.getItem('qrTableId');
+      const qrTableNumber = localStorage.getItem('qrTableNumber');
+      if (qrTableId) {
+        document.getElementById('dine-in-option')?.classList.remove('hidden');
+        document.querySelector('input[name="fulfillmentType"][value="DINE_IN"]')?.click();
+        document.getElementById('qr-table-banner')?.classList.remove('hidden');
+        const label = document.getElementById('qr-table-label');
+        if (label) label.textContent = qrTableNumber || qrTableId;
+        const payLabel = document.getElementById('pay-at-label');
+        if (payLabel) payLabel.textContent = 'Pay at table (after kitchen)';
+        document.getElementById('checkout-btn').textContent = 'Send to kitchen';
+      }
+
+      document.querySelectorAll('input[name="fulfillmentType"]').forEach(r => {
+        r.addEventListener('change', () => {
+          const isDelivery = document.querySelector('input[name="fulfillmentType"]:checked')?.value === 'DELIVERY';
+          document.getElementById('delivery-address-group')?.classList.toggle('hidden', !isDelivery);
+          renderCart();
+        });
+      });
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       const sizeModifiers = { Small: -0.50, Medium: 0, Large: 1.00 };
 
@@ -131,7 +192,10 @@
 
         totalItemsEl.textContent = totalItems;
         subtotalPriceEl.textContent = '$' + subtotal.toFixed(2);
-        totalPriceEl.textContent = '$' + subtotal.toFixed(2);
+        const tax = subtotal * TAX_RATE;
+        const delivery = document.querySelector('input[name="fulfillmentType"]:checked')?.value === 'DELIVERY' ? DELIVERY_FEE : 0;
+        taxPriceEl.textContent = '$' + tax.toFixed(2);
+        totalPriceEl.textContent = '$' + (subtotal + tax + delivery).toFixed(2);
         document.getElementById('checkout-btn').disabled = false;
         updateHeaderCartCount();
       }
@@ -171,7 +235,12 @@
             note: item.note,
             price: item.price
           })),
-          paymentMethod: document.querySelector('input[name="paymentMethod"]:checked')?.value || 'PAY_AT_PICKUP'
+          paymentMethod: document.querySelector('input[name="paymentMethod"]:checked')?.value || 'PAY_AT_PICKUP',
+          couponCode: document.getElementById('coupon-code')?.value?.trim() || null,
+          fulfillmentType: document.querySelector('input[name="fulfillmentType"]:checked')?.value || 'PICKUP',
+          deliveryAddress: document.getElementById('delivery-address')?.value?.trim() || null,
+          tableId: qrTableId ? parseInt(qrTableId, 10) : null,
+          guestName: document.getElementById('guest-name')?.value?.trim() || null
         };
         try {
           const response = await fetch('/order/checkout', {

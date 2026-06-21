@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body>
+<div th:replace="~{fragments/order-header :: order-header}"></div>
+<main class="page"><div class="container" style="max-width:480px;">
+  <h1 class="page-title">Two-factor setup</h1>
+  <div th:if="${enabled}" class="card card-flat mb-2" style="background:var(--success-bg);padding:0.75rem;">2FA is enabled on your account.</div>
+  <div class="card mt-2" th:unless="${enabled}">
+    <p>Scan this QR with Google Authenticator or Authy, then enter a code to confirm.</p>
+    <img th:src="${qrDataUri}" alt="2FA QR" style="max-width:200px;display:block;margin:1rem auto;">
+    <p class="text-muted" style="font-size:0.85rem;word-break:break-all;">Secret: <code th:text="${secret}"></code></p>
+    <form th:action="@{/account/2fa/enable}" method="post">
+      <input type="hidden" name="secret" th:value="${secret}">
+      <div class="form-group"><label>Verification code</label><input class="input" name="code" required></div>
+      <button type="submit" class="btn btn-primary">Enable 2FA</button>
+    </form>
+  </div>
+  <form th:if="${enabled}" th:action="@{/account/2fa/disable}" method="post" class="mt-2">
+    <button type="submit" class="btn btn-outline" onclick="return confirm('Disable 2FA?')">Disable 2FA</button>
+  </form>
+  <a href="/customer/profile" class="btn btn-outline mt-2">Back to profile</a>
+</div></main>
+</body>
+</html>

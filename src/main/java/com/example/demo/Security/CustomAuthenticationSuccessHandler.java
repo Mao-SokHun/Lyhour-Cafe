@@ -55,8 +55,13 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         }
 
         var roles = authentication.getAuthorities();
-        if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN") || r.getAuthority().equals("ROLE_MANAGER"))) {
+        if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN") || r.getAuthority().equals("ROLE_MANAGER")
+                || r.getAuthority().equals("ROLE_OWNER") || r.getAuthority().equals("ROLE_SUPER_ADMIN"))) {
             response.sendRedirect("/dashboard");
+        } else if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_KITCHEN"))) {
+            response.sendRedirect("/admin/kitchen");
+        } else if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_CASHIER") || r.getAuthority().equals("ROLE_WAITER"))) {
+            response.sendRedirect("/admin/pos");
         } else if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_CUSTOMER") || r.getAuthority().equals("ROLE_USER"))) {
             response.sendRedirect("/index");
         } else {
