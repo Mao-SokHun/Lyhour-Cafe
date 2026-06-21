@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<aside th:fragment="admin-sidebar" class="admin-sidebar" id="admin-sidebar">
+  <div class="admin-brand">
+    <span class="logo-mark"><i class="fa-solid fa-mug-hot"></i></span>
+    <div>
+      <strong>Lyhour Coffee</strong>
+      <small>Staff panel</small>
+    </div>
+  </div>
+  <nav class="admin-nav">
+    <a href="/dashboard"><span class="icon"><i class="fa-solid fa-chart-pie"></i></span> Dashboard</a>
+    <a href="/admin/pos"><span class="icon"><i class="fa-solid fa-cash-register"></i></span> POS</a>
+    <a href="/admin/orders"><span class="icon"><i class="fa-solid fa-receipt"></i></span> Orders</a>
+    <a href="/products/add"><span class="icon"><i class="fa-solid fa-plus"></i></span> Add product</a>
+    <a href="/users"><span class="icon"><i class="fa-solid fa-users"></i></span> Customers</a>
+    <a href="/admin/reports"><span class="icon"><i class="fa-solid fa-chart-line"></i></span> Reports</a>
+    <a href="/admin/reservations"><span class="icon"><i class="fa-solid fa-calendar-check"></i></span> Reservations</a>
+    <a href="/index"><span class="icon"><i class="fa-solid fa-store"></i></span> Shop front</a>
+  </nav>
+  <div class="admin-sidebar-footer">
+    <a href="/admin/profile"><i class="fa-regular fa-user"></i> Profile</a>
+    <a href="/signout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign out</a>
+  </div>
+</aside>
+</html>

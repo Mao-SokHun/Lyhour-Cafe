@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <button type="button" class="btn btn-outline admin-mobile-toggle" id="admin-sidebar-toggle"><i class="fa-solid fa-bars"></i> Menu</button>
+    <div class="admin-topbar">
+      <div><h1>Dashboard</h1><p class="page-subtitle">Shop overview at a glance</p></div>
+      <a href="/products/add" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add product</a>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="label">Products</div><div class="value" th:text="${totalProducts}">0</div></div>
+      <div class="stat-card"><div class="label">Customers</div><div class="value" th:text="${totalCustomers}">0</div></div>
+      <div class="stat-card"><div class="label">Pending orders</div><div class="value" th:text="${pendingOrders}">0</div></div>
+      <div class="stat-card accent"><div class="label">Today's revenue</div><div class="value" th:text="'$' + ${#numbers.formatDecimal(todayRevenue, 1, 2)}">$0</div></div>
+      <div class="stat-card"><div class="label">Low stock</div><div class="value" th:text="${lowStockItems}">0</div></div>
+    </div>
+
+    <div class="action-bar">
+      <a href="/admin/pos" class="btn btn-primary">Open POS</a>
+      <a href="/admin/orders" class="btn btn-outline">Orders</a>
+      <a href="/admin/reports" class="btn btn-outline">Reports</a>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="product : ${products}">
+            <td th:text="${product.id}"></td>
+            <td th:text="${product.name}"></td>
+            <td><span class="badge badge-inshop" th:text="${product.category}"></span></td>
+            <td th:text="'$' + ${product.price}"></td>
+            <td th:text="${product.stock}" th:style="${product.stock <= 10} ? 'color:var(--danger);font-weight:700;' : ''"></td>
+            <td>
+              <a th:href="@{/products/editproduct(id=${product.id})}" class="btn btn-ghost btn-sm">Edit</a>
+              <a th:href="@{'/products/delete?id=' + ${product.id}}" class="btn btn-ghost btn-sm" style="color:var(--danger);" onclick="return confirm('Delete this product?')">Delete</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script src="/javascript/ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <button type="button" class="btn btn-outline admin-mobile-toggle" id="admin-sidebar-toggle"><i class="fa-solid fa-bars"></i> Menu</button>
+    <div class="admin-topbar"><div><h1>Reports</h1><p class="page-subtitle">Sales performance</p></div></div>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="label">Orders today</div><div class="value" th:text="${todayOrders}">0</div></div>
+      <div class="stat-card"><div class="label">Orders this week</div><div class="value" th:text="${weekOrders}">0</div></div>
+      <div class="stat-card accent"><div class="label">Revenue today</div><div class="value" th:text="'$' + ${#numbers.formatDecimal(todayRevenue, 1, 2)}">$0</div></div>
+      <div class="stat-card"><div class="label">Total revenue</div><div class="value" th:text="'$' + ${#numbers.formatDecimal(totalRevenue, 1, 2)}">$0</div></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr th:each="order : ${recentOrders}">
+            <td th:text="'#' + ${order.id}"></td>
+            <td th:text="${order.username}"></td>
+            <td th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy HH:mm')}"></td>
+            <td th:text="'$' + ${#numbers.formatDecimal(order.totalPrice, 1, 2)}"></td>
+            <td th:text="${order.status}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script src="/javascript/ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+# Copy to application-neon.properties and fill in your Neon credentials
+spring.datasource.url=jdbc:postgresql://YOUR-NEON-HOST/neondb?sslmode=require
+spring.datasource.username=neondb_owner
+spring.datasource.password=YOUR_PASSWORD
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+spring.h2.console.enabled=false
+spring.datasource.hikari.maximum-pool-size=5
+spring.datasource.hikari.minimum-idle=1
+spring.datasource.hikari.connection-timeout=30000

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body class="bg-white text-gray-900">
+  <div th:replace="fragments/header :: header"></div>
+    <section class="relative min-h-screen pt-24 md:pt-28 bg-cover bg-center" style="background-image:url('https://images.unsplash.com/photo-1509042239860-f550ce710b93');">
+      <div class="absolute inset-0 bg-black/70"></div>
+
+      <div class="relative container mx-auto h-full flex flex-col md:flex-row items-center justify-between px-4 sm:px-6 lg:px-12 pt-20 md:pt-0">
+        <!-- Hero Text -->
+        <div class="text-center md:text-left max-w-xl">
+          <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            We’re Organic And <br /> Fresh Coffee Shop <br /> Partner For You
+          </h1>
+          <p class="mt-4 text-gray-300 text-base sm:text-lg">
+            A long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
+          </p>
+          <div class="mt-6 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+            <button class="bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-500 transition w-full sm:w-auto">
+              <a href="#product-menu">View Menu</a>
+            </button>
+            <button class="border border-yellow-400 text-yellow-400 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 hover:text-black transition w-full sm:w-auto">
+              <a href="/form">Book Now</a>
+            </button>
+          </div>
+        </div>
+
+        <!-- Floating Coffee Cup -->
+        <div class="mt-10 md:mt-0 animate-float w-64 sm:w-72 md:w-80">
+          <img src="/images/img2.png" alt="Image2" class="drop-shadow-2xl w-full" />
+        </div>
+      </div>
+      <div class="absolute bottom-0 w-full overflow-hidden">
+        <svg class="w-full h-20 sm:h-24" viewBox="0 0 1440 320">
+          <path fill="#fff" d="M0,256L60,234.7C120,213,240,171,360,138.7C480,107,600,85,720,90.7C840,96,960,128,1080,154.7C1200,181,1320,203,1380,213.3L1440,224V320H0Z"></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="bg-white py-16 sm:py-20" id="about">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-12 flex flex-col md:flex-row items-center gap-10">
+        <!-- Image -->
+        <div class="md:w-1/2 text-center">
+          <img src="/images/img17.png" alt="Image10" class="mx-auto w-60 sm:w-72 md:w-[450px]" />
+        </div>
+
+        <!-- Text -->
+        <div class="md:w-1/2 text-center md:text-left">
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            One of The Best Coffee Shop Houses in The City
+          </h2>
+          <p class="text-gray-600 mb-6 leading-relaxed text-sm sm:text-base">
+            The key to high-quality organic coffee production lies in sustainable farming methods and ethical sourcing practices.
+          </p>
+          <div class="flex flex-wrap justify-center md:justify-start gap-6">
+            <div class="text-center">
+              <h3 class="text-xl sm:text-2xl font-bold text-yellow-500">2094+</h3>
+              <p class="text-gray-500 text-sm">Total Customers</p>
+            </div>
+            <div class="text-center">
+              <h3 class="text-xl sm:text-2xl font-bold text-yellow-500">15+</h3>
+              <p class="text-gray-500 text-sm">World Outlets</p>
+            </div>
+            <div class="text-center">
+              <h3 class="text-xl sm:text-2xl font-bold text-yellow-500">100%</h3>
+              <p class="text-gray-500 text-sm">Satisfaction</p>
+            </div>
+          </div>
+          <button class="mt-8 bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-500 transition w-full sm:w-auto">
+            Reservation
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Popular Coffee Menu -->
+    <section class="bg-[#5C3B28] text-white py-14 sm:py-16">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-12 text-center">
+        <h2 class="text-2xl sm:text-3xl font-bold mb-8">Our Popular Coffee Menu</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 sm:gap-6">
+          <div class="p-3 sm:p-4 bg-white/10 rounded-lg hover:bg-yellow-400 hover:text-black transition cursor-pointer">
+            ☕<p class="mt-1 sm:mt-2 text-sm sm:text-base">Chocolate Coffee</p>
+          </div>
+          <div class="p-3 sm:p-4 bg-white/10 rounded-lg hover:bg-yellow-400 hover:text-black transition cursor-pointer">
+            ☕<p class="mt-1 sm:mt-2 text-sm sm:text-base">Corki Coffee</p>
+          </div>
+          <div class="p-3 sm:p-4 bg-white/10 rounded-lg hover:bg-yellow-400 hover:text-black transition cursor-pointer">
+            🥐<p class="mt-1 sm:mt-2 text-sm sm:text-base">Pastry Coffee</p>
+          </div>
+          <div class="p-3 sm:p-4 bg-white/10 rounded-lg hover:bg-yellow-400 hover:text-black transition cursor-pointer">
+            ☕<p class="mt-1 sm:mt-2 text-sm sm:text-base">Normal Coffee</p>
+          </div>
+          <div class="p-3 sm:p-4 bg-white/10 rounded-lg hover:bg-yellow-400 hover:text-black transition cursor-pointer">
+            🍯<p class="mt-1 sm:mt-2 text-sm sm:text-base">Honey Coffee</p>
+          </div>
+          <div class="p-3 sm:p-4 bg-white/10 rounded-lg hover:bg-yellow-400 hover:text-black transition cursor-pointer">
+            🥛<p class="mt-1 sm:mt-2 text-sm sm:text-base">Milkshake Coffee</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Menu Section -->
+    <section class="py-16 sm:py-20 bg-white">
+      <main class="max-w-6xl mx-auto px-6 py-12" id="product-menu">
+        <h2 class="text-4xl font-bold mb-20 text-center"> Welcome Please Order Your Favourith drink</h2>
+
+
+        <!-- Coffe Products -->
+        <h2 class="text-3xl font-bold mb-10 text-center">☕ Coffee </h2>
+        <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-12">
+          <div th:each="product : ${products}" th:if="${product.category == 'Coffee'}" 
+              class="bg-white rounded-3xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
+            <div class="h-52 overflow-hidden">
+              <img th:src="@{${product.imageUrl}}" class="w-full h-full object-cover" alt="Product Image">
+            </div>
+            <div class="p-5">
+              <h3 class="text-xl font-extrabold text-gray-800 mb-2" th:text="${product.name}">Product Name</h3>
+              <p class="text-gray-500 text-sm mb-4 line-clamp-3" th:text="${product.description}">Product description...</p>
+              <div class="flex items-center justify-between">
+                <p class="text-yellow-600 font-bold text-lg" th:text="'$' + ${product.price}">0 $</p>
+                <a href="#"
+                   th:data-id="${product.id}"
+                   th:data-name="${product.name}"
+                   th:data-price="${product.price}"
+                   th:data-image-url="${product.imageUrl}"
+                   class="add-to-cart-btn bg-yellow-500 text-black px-4 py-2 rounded-xl font-semibold hover:bg-yellow-600 transition">
+                  Add to Cart
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Cake Products -->
+        <h2 class="text-3xl font-bold mb-10 text-center ">🍵 Cake </h2>
+        <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-12">
+          <div th:each="product : ${products}" th:if="${product.category == 'Cake'}" 
+              class="bg-white rounded-3xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
+            <div class="h-52 overflow-hidden">
+              <img th:src="@{${product.imageUrl}}" class="w-full h-full object-cover" alt="Product Image">
+            </div>
+            <div class="p-5">
+              <h3 class="text-xl font-extrabold text-gray-800 mb-2" th:text="${product.name}">Product Name</h3>
+              <p class="text-gray-500 text-sm mb-4 line-clamp-3" th:text="${product.description}">Product description...</p>
+              <div class="flex items-center justify-between">
+                <p class="text-yellow-600 font-bold text-lg" th:text="'$' + ${product.price}">0 $</p>
+                <a href="#"
+                   th:data-id="${product.id}"
+                   th:data-name="${product.name}"
+                   th:data-price="${product.price}"
+                   th:data-image-url="${product.imageUrl}"
+                   class="add-to-cart-btn bg-yellow-500 text-black px-4 py-2 rounded-xl font-semibold hover:bg-yellow-600 transition">
+                  Add to Cart
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Drink Products -->
+        <h2 class="text-3xl font-bold mb-10 text-center">🍹 Drink </h2>
+        <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-12">
+          <div th:each="product : ${products}" th:if="${product.category == 'Drink'}" 
+              class="bg-white rounded-3xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
+            <div class="h-52 overflow-hidden">
+              <img th:src="@{${product.imageUrl}}" class="w-full h-full object-cover" alt="Product Image">
+            </div>
+            <div class="p-5">
+              <h3 class="text-xl font-extrabold text-gray-800 mb-2" th:text="${product.name}">Product Name</h3>
+              <p class="text-gray-500 text-sm mb-4 line-clamp-3" th:text="${product.description}">Product description...</p>
+              <div class="flex items-center justify-between">
+                <p class="text-yellow-600 font-bold text-lg" th:text="'$' + ${product.price}">0 $</p>
+                <a href="#"
+                   th:data-id="${product.id}"
+                   th:data-name="${product.name}"
+                   th:data-price="${product.price}"
+                   th:data-image-url="${product.imageUrl}"
+                   class="add-to-cart-btn bg-yellow-500 text-black px-4 py-2 rounded-xl font-semibold hover:bg-yellow-600 transition">
+                  Add to Cart
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </section>
+
+
+    <!-- Feed Back -->
+    <section class="bg-gray-900 text-white py-16 sm:py-20">
+      <div class="container mx-auto px-4 sm:px-6 text-center">
+        <h2 class="text-2xl sm:text-3xl font-bold mb-12">What Our Happy Clients Say About Us</h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+          <!-- Testimonial 1 -->
+          <div class="bg-gray-800 rounded-2xl p-6 flex flex-col items-center shadow-lg">
+              <img src="https://i.pravatar.cc/50?img=1" alt="Client 1" class="w-16 h-16 rounded-full border-2 border-yellow-400 mb-4">
+              <h3 class="font-semibold text-lg mb-2">Alice Johnson</h3>
+              <p class="text-gray-300 text-sm sm:text-base">"The best coffee experience in the city. Every cup is brewed to perfection and served with love!"</p>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div class="bg-gray-800 rounded-2xl p-6 flex flex-col items-center shadow-lg">
+              <img src="https://i.pravatar.cc/50?img=2" alt="Client 2" class="w-16 h-16 rounded-full border-2 border-yellow-400 mb-4">
+              <h3 class="font-semibold text-lg mb-2">Michael Lee</h3>
+              <p class="text-gray-300 text-sm sm:text-base">"Friendly staff, amazing coffee, and a cozy environment. Highly recommend!"</p>
+          </div>
+
+          <!-- Testimonial 3 -->
+          <div class="bg-gray-800 rounded-2xl p-6 flex flex-col items-center shadow-lg">
+              <img src="https://i.pravatar.cc/50?img=3" alt="Client 3" class="w-16 h-16 rounded-full border-2 border-yellow-400 mb-4">
+              <h3 class="font-semibold text-lg mb-2">Sophia Martinez</h3>
+              <p class="text-gray-300 text-sm sm:text-base">"Every visit is a delight! The coffee is top-notch and the ambiance is perfect for relaxing."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Blog Section -->
+    <section class="py-16 sm:py-20 bg-white" id="blog">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-12">
+        <h2 class="text-2xl sm:text-3xl font-bold text-center mb-10">Read Our Latest Blog Post</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div class="border rounded-lg overflow-hidden shadow hover:shadow-lg transition">
+            <img src="/images/img13.png" alt="Blog Post" class="w-full h-44 sm:h-56 object-cover" />
+            <div class="p-4 sm:p-6">
+              <h3 class="text-lg font-bold mb-2">Top 10 Coffee Brewing Tips</h3>
+              <p class="text-gray-600 text-sm">Learn how to brew the perfect cup of coffee at home.</p>
+              <a href="#" class="mt-4 inline-block text-yellow-500 hover:underline">Read More</a>
+            </div>
+          </div>
+          <div class="border rounded-lg overflow-hidden shadow hover:shadow-lg transition">
+            <img src="/images/img14.png" alt="Blog Post" class="w-full h-44 sm:h-56 object-cover" />
+            <div class="p-4 sm:p-6">
+              <h3 class="text-lg font-bold mb-2">Why Organic Coffee Matters</h3>
+              <p class="text-gray-600 text-sm">Discover the benefits of organic coffee and sustainability.</p>
+              <a href="#" class="mt-4 inline-block text-yellow-500 hover:underline">Read More</a>
+            </div>
+          </div>
+          <div class="border rounded-lg overflow-hidden shadow hover:shadow-lg transition">
+            <img src="/images/img15.png" alt="Blog Post" class="w-full h-44 sm:h-56 object-cover" />
+            <div class="p-4 sm:p-6">
+              <h3 class="text-lg font-bold mb-2">The History of Coffee</h3>
+              <p class="text-gray-600 text-sm">From ancient origins to modern cafes worldwide.</p>
+              <a href="#" class="mt-4 inline-block text-yellow-500 hover:underline">Read More</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Contact Section -->
+    <section class="py-16 sm:py-20" id="contact">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-12 grid md:grid-cols-2 gap-12">
+        <!-- Left Content -->
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold mb-6">Get in Touch</h2>
+          <p class="text-gray-600 mb-6">
+            Have questions or want to book a table? Reach out to us and we’ll be happy to help!
+          </p>
+          <ul class="space-y-4 text-gray-700">
+            <li><span class="font-bold">📍 Address:</span> #390 Street Coffee, Phnom Penh, Cambodia</li>
+            <li><span class="font-bold">📞 Phone:</span> +855 97 49 44 390</li>
+            <li><span class="font-bold">✉️ Email:</span> support@lyhourcoffee.com or sokhunmao390@gmail.com</li>
+            <li><span class="font-bold">🕒 Hours:</span> Mon - Sun (7:00 AM - 9:00 PM)</li>
+          </ul>
+        </div>
+
+        <!-- Right Form -->
+        <div class="bg-gray-100 p-6 rounded-lg shadow-lg">
+          <h3 class="text-xl font-semibold mb-4">Send us a Message</h3>
+          <form action="#" method="post" class="space-y-4">
+            <input type="text" placeholder="Your Name" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-yellow-400" required />
+            <input type="email" placeholder="Your Email" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-yellow-400" required />
+            <textarea placeholder="Your Message" rows="5" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-yellow-400" required></textarea>
+            <button type="submit" class="w-full bg-yellow-400 text-black py-3 rounded-lg font-semibold hover:bg-yellow-500 transition">
+              Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+    <div th:replace="fragments/footer :: footer"></div>
+    
+    <script src="/javascript/addcart.js"></script>
+    
+  </body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body class="auth-page">
+  <div class="auth-shell" style="max-width:420px;grid-template-columns:1fr;">
+    <div class="auth-form">
+      <h2>Sign out?</h2>
+      <p class="subtitle">You'll need to sign in again to access your account.</p>
+      <form method="post" th:action="@{/signout}">
+        <button type="submit" class="btn btn-primary btn-block" style="background:var(--danger);">Yes, sign out</button>
+      </form>
+      <p class="form-note" th:if="${backUrl != null}">
+        <a th:href="@{${backUrl}}">Go back</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

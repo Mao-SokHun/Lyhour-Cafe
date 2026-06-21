@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body>
+  <div th:replace="~{fragments/guest-header :: guest-header}"></div>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Phnom Penh · Since 2025</span>
+        <h1>Slow coffee. Warm mornings.</h1>
+        <p>Order at the counter or from your phone. Every cup is brewed to order with beans we roast in small batches.</p>
+        <div class="hero-actions">
+          <a href="#product-menu" class="btn btn-primary">Browse menu</a>
+          <a href="/signup" class="btn btn-outline">Create account</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=900&q=80" alt="Coffee shop">
+        <div class="hero-card">
+          <strong>Open daily</strong>
+          <p class="text-muted mt-1" style="margin:0;font-size:0.9rem;">7:00 AM – 9:00 PM · #390 Street Coffee</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div th:replace="~{fragments/product-menu :: product-menu}"></div>
+
+  <section class="section" id="about" style="padding-top:0;">
+    <div class="container">
+      <div class="info-strip">
+        <div class="info-item"><strong>14+</strong><span>Menu items</span></div>
+        <div class="info-item"><strong>100%</strong><span>Fresh daily</span></div>
+        <div class="info-item"><strong>In-shop</strong><span>POS & online orders</span></div>
+        <div class="info-item"><strong>7–21</strong><span>Opening hours</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact" style="padding-top:0;">
+    <div class="container grid-2">
+      <div class="card">
+        <h2>Visit us</h2>
+        <p class="text-muted mt-2">#390 Street Coffee, Phnom Penh<br>+855 97 49 44 390<br>support@lyhourcoffee.com</p>
+      </div>
+      <div class="card card-flat" style="background:linear-gradient(135deg,#2a1d14,#4a2f1d);color:#fff7f0;border:none;">
+        <h2 style="color:#fff7f0;">Book a table</h2>
+        <p style="color:#d8c8bb;">Reserve your spot online — we'll confirm by email.</p>
+        <a href="/reservations" class="btn btn-primary mt-2">Make reservation</a>
+      </div>
+    </div>
+  </section>
+
+  <div th:replace="~{fragments/footer :: footer}"></div>
+  <script src="/javascript/ui.js"></script>
+  <script src="/javascript/addcart.js"></script>
+</body>
+</html>

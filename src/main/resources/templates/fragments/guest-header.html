@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:fragment="guest-header" class="site-header" id="header">
+  <div class="inner">
+    <a href="/home" class="logo">
+      <span class="logo-mark"><i class="fa-solid fa-mug-hot"></i></span>
+      <span>Lyhour Coffee</span>
+    </a>
+    <nav class="site-nav">
+      <a href="/home">Home</a>
+      <a href="/home#product-menu">Menu</a>
+      <a href="/home#about">About</a>
+      <a href="/home#contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <a href="/cart" class="icon-btn" aria-label="Cart">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span class="cart-count-badge hidden">0</span>
+      </a>
+      <a href="/signin" class="btn btn-ghost btn-sm">Sign in</a>
+      <a href="/signup" class="btn btn-primary btn-sm">Join</a>
+      <button type="button" class="menu-toggle" id="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="/home">Home</a>
+    <a href="/home#product-menu">Menu</a>
+    <a href="/home#about">About</a>
+    <a href="/home#contact">Contact</a>
+    <a href="/cart">Cart</a>
+    <a href="/signin">Sign in</a>
+    <a href="/signup">Sign up</a>
+  </div>
+</header>
+</html>

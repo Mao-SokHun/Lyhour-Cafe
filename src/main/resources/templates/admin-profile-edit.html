@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <div class="admin-topbar"><h1>Edit profile</h1></div>
+    <div class="card" style="max-width:560px;">
+      <form th:action="@{/admin/profile/update}" th:object="${user}" method="post">
+        <div class="form-group"><label>Username</label><input class="input" type="text" th:field="*{username}" required></div>
+        <div class="form-group"><label>Email</label><input class="input" type="email" th:field="*{email}" required></div>
+        <div class="form-group"><label>New password</label><input class="input" type="password" th:field="*{password}" placeholder="Leave blank to keep current"></div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="/admin/profile" class="btn btn-outline">Cancel</a>
+      </form>
+    </div>
+  </main>
+</div>
+</body>
+</html>

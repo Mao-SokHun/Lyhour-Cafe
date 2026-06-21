@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:fragment="site-header(homeUrl, menuUrl)" class="site-header" id="header">
+  <div class="inner">
+    <a th:href="${homeUrl}" class="logo">
+      <span class="logo-mark"><i class="fa-solid fa-mug-hot"></i></span>
+      <span>Lyhour Coffee</span>
+    </a>
+
+    <nav class="site-nav">
+      <a th:href="${homeUrl}">Home</a>
+      <a th:href="${menuUrl}">Menu</a>
+      <a th:href="${homeUrl + '#about'}">About</a>
+      <a th:href="${homeUrl + '#contact'}">Contact</a>
+    </nav>
+
+    <div class="header-actions">
+      <a href="/cart" class="icon-btn" aria-label="Cart">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span class="cart-count-badge hidden">0</span>
+      </a>
+      <th:block th:replace="~{::actions}"></th:block>
+      <button type="button" class="menu-toggle" id="menu-toggle" aria-label="Menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a th:href="${homeUrl}">Home</a>
+    <a th:href="${menuUrl}">Menu</a>
+    <a th:href="${homeUrl + '#about'}">About</a>
+    <a th:href="${homeUrl + '#contact'}">Contact</a>
+    <a href="/cart">Cart</a>
+    <th:block th:replace="~{::mobile-actions}"></th:block>
+  </div>
+</header>
+</html>

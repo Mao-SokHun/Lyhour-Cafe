@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body class="auth-page">
+  <div class="auth-shell">
+    <div class="auth-brand">
+      <span class="logo-mark" style="margin-bottom:1rem;"><i class="fa-solid fa-mug-hot"></i></span>
+      <h1>Join the club</h1>
+      <p>Create an account to order online and view your history anytime.</p>
+    </div>
+    <div class="auth-form">
+      <h2>Sign up</h2>
+      <p class="subtitle">It only takes a minute.</p>
+      <form method="post" th:action="@{/signup}">
+        <div class="form-group">
+          <label for="name">Username</label>
+          <input class="input" type="text" id="name" name="username" placeholder="Choose a username" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input class="input" type="email" id="email" name="email" placeholder="you@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input class="input" type="password" id="password" name="password" placeholder="Create a password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block mt-2">Create account</button>
+      </form>
+      <p class="form-note">Already registered? <a href="/signin">Sign in</a></p>
+    </div>
+  </div>
+</body>
+</html>

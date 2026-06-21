@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body>
+  <div th:replace="~{fragments/order-header :: order-header}"></div>
+  <main class="page">
+    <div class="container" style="max-width:720px;">
+      <nav class="breadcrumb">
+        <a th:href="${isAdminView} ? @{/admin/orders} : @{/customer/orders}">Orders</a> <span>/</span> <span>Details</span>
+      </nav>
+
+      <div class="card">
+        <div class="flex justify-between items-start flex-wrap gap-sm">
+          <div>
+            <h1 class="page-title" th:text="'Order #' + ${order.id}">Order</h1>
+            <p class="page-subtitle" th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy · HH:mm')}"></p>
+          </div>
+          <span class="badge"
+                th:classappend="${order.status.name() == 'COMPLETED'} ? 'badge-completed' :
+                                (${order.status.name() == 'PENDING'} ? 'badge-pending' :
+                                (${order.status.name() == 'PREPARING'} ? 'badge-preparing' : 'badge-cancelled'))"
+                th:text="${order.status}"></span>
+        </div>
+
+        <div th:each="item : ${order.orderItems}" class="cart-item mt-2">
+          <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}">
+          <div>
+            <h3 style="font-size:1.15rem;" th:text="${item.product.name}"></h3>
+            <p class="text-muted" style="margin:0;font-size:0.88rem;">
+              <span th:text="${item.quantity}"></span> × $<span th:text="${#numbers.formatDecimal(item.priceAtTimeOfOrder, 1, 2)}"></span>
+              <span th:if="${item.size != null}"> · <span th:text="${item.size}"></span></span>
+            </p>
+            <p th:if="${item.note != null and !item.note.isEmpty()}" class="text-muted" style="margin:0.25rem 0 0;font-style:italic;" th:text="'Note: ' + ${item.note}"></p>
+          </div>
+          <strong th:text="'$' + ${#numbers.formatDecimal(item.priceAtTimeOfOrder * item.quantity, 1, 2)}"></strong>
+        </div>
+
+        <div class="flex justify-between mt-3" style="font-size:1.2rem;font-weight:700;">
+          <span>Total</span>
+          <span style="color:var(--accent-dark);" th:text="'$' + ${#numbers.formatDecimal(order.totalPrice, 1, 2)}"></span>
+        </div>
+
+        <div th:if="${isAdminView}" class="card card-flat mt-3" style="background:var(--surface-2);">
+          <form th:action="@{/admin/orders/{id}/status(id=${order.id})}" method="post" class="flex flex-wrap gap-sm items-end">
+            <div class="form-group" style="margin:0;min-width:180px;">
+              <label>Update status</label>
+              <select name="status" class="select">
+                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${s == order.status}"></option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+
+        <div class="flex flex-wrap gap-sm mt-3">
+          <a href="/index#product-menu" class="btn btn-primary">Order again</a>
+          <a th:href="${isAdminView} ? @{/admin/orders} : @{/customer/orders}" class="btn btn-outline">Back</a>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div th:replace="~{fragments/footer :: footer}"></div>
+  <script src="/javascript/ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header
+    th:fragment="dashboard-header"
+    class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-white/70 shadow-md">
+  <div class="container mx-auto flex items-center justify-between py-4 px-6">
+    <!-- Logo -->
+    <div class="text-2xl font-bold text-yellow-600" style="font-family: Fleur De Leah, cursive; font-style: normal; font-weight: 400">☕ Lyhour Coffee & Cake - Admin</div>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex space-x-8 text-gray-800 font-medium">
+      <a href="/dashboard" class="hover:text-yellow-600">Dashboard</a>
+      <a href="/admin/pos" class="hover:text-yellow-600">POS</a>
+      <a href="/products/add" class="hover:text-yellow-600">Add Product</a>
+      <a href="/index" class="hover:text-yellow-600">Shop Menu</a>
+      <a href="/admin/orders" class="hover:text-yellow-600">Orders</a>
+      <a href="/users" class="hover:text-yellow-600">Customers</a>
+      <a href="/admin/reports" class="hover:text-yellow-600">Reports</a>
+    </nav>
+
+    <div class="hidden md:flex items-center text-gray-800 space-x-4">
+      <button class="hover:text-yellow-500 transition">
+        <a href="/admin/profile">
+          <svg class="w-[30px] h-[30px] hover:text-yellow-500 transition" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a8.949 8.949 0 0 0 4.951-1.488A3.987 3.987 0 0 0 13 16h-2a3.987 3.987 0 0 0-3.951 3.512A8.948 8.948 0 0 0 12 21Zm3-11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+          </svg>
+        </a>
+      </button>   
+
+
+      <button class="hover:text-yellow-500 transition">
+        <a href="/signout">
+          <svg class="w-6 h-6 hover:text-yellow-500 transition dark:text-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+          </svg>
+        </a>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button id="menu-toggle" class="md:hidden text-gray-800 focus:outline-none text-3xl">☰</button>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <div class="hidden md:hidden bg-white/90 backdrop-blur-md absolute top-16 left-0 w-full text-center space-y-6 py-6 text-gray-800 shadow-lg">
+    <a href="/dashboard" class="block hover:text-yellow-600 transition">Dashboard</a>
+    <a href="/admin/pos" class="block hover:text-yellow-600 transition">POS</a>
+    <a href="/products/add" class="block hover:text-yellow-600 transition">Add Product</a>
+    <a href="/admin/orders" class="block hover:text-yellow-600 transition">Orders</a>
+    <a href="/users" class="block hover:text-yellow-600 transition">Customers</a>
+    <a href="/admin/reports" class="block hover:text-yellow-600 transition">Reports</a>
+    <div class="pt-4 space-y-4">
+      <a href="/signout" class="block w-4/5 mx-auto py-2 bg-yellow-500 text-black rounded-full hover:bg-yellow-600 transition">Sign Out</a>
+      <a href="/admin/profile" class="block w-4/5 mx-auto py-2 border border-yellow-500 rounded-full hover:bg-yellow-500 hover:text-black transition">Profile</a>
+      
+    </div>
+  </div>
+</header>
+</html>

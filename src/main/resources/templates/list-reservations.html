@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head>
+<body class="admin-body">
+<div class="admin-layout">
+  <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
+  <main class="admin-main">
+    <button type="button" class="btn btn-outline admin-mobile-toggle" id="admin-sidebar-toggle"><i class="fa-solid fa-bars"></i> Menu</button>
+    <div class="admin-topbar"><div><h1>Reservations</h1><p class="page-subtitle">Table bookings from customers</p></div></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Guest</th><th>Date</th><th>Time</th><th>Guests</th><th>Branch</th><th>Status</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr th:each="r : ${reservations}">
+            <td>
+              <strong th:text="${r.customerName}"></strong><br>
+              <span class="text-muted" style="font-size:0.85rem;" th:text="${r.email}"></span>
+            </td>
+            <td th:text="${r.reservationDate}"></td>
+            <td th:text="${r.reservationTime}"></td>
+            <td th:text="${r.guests}"></td>
+            <td th:text="${r.branch != null ? r.branch.name : '—'}"></td>
+            <td th:text="${r.status}"></td>
+            <td>
+              <form th:action="@{/admin/reservations/{id}/status(id=${r.id})}" method="post" class="flex gap-sm">
+                <select name="status" class="select" style="padding:0.4rem;font-size:0.85rem;">
+                  <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${s == r.status}"></option>
+                </select>
+                <button type="submit" class="btn btn-ghost btn-sm">Save</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script src="/javascript/ui.js"></script>
+</body>
+</html>

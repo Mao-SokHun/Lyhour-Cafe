@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<header th:fragment="header" class="site-header is-scrolled" id="header">
+  <div class="inner">
+    <a href="/index" class="logo">
+      <span class="logo-mark"><i class="fa-solid fa-mug-hot"></i></span>
+      <span>Lyhour Coffee</span>
+    </a>
+    <nav class="site-nav">
+      <a href="/index">Home</a>
+      <a href="/index#product-menu">Menu</a>
+      <a href="/index#about">About</a>
+      <a href="/index#contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <a href="/cart" class="icon-btn" aria-label="Cart">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span class="cart-count-badge hidden">0</span>
+      </a>
+      <div class="dropdown">
+        <button type="button" class="icon-btn" id="profile-toggle-btn" aria-label="Profile">
+          <i class="fa-regular fa-user"></i>
+        </button>
+        <div class="dropdown-menu" id="profile-menu">
+          <a href="/customer/profile">My profile</a>
+          <a href="/customer/orders">My orders</a>
+          <a href="/signout" class="danger">Sign out</a>
+        </div>
+      </div>
+      <button type="button" class="menu-toggle" id="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="/index">Home</a>
+    <a href="/index#product-menu">Menu</a>
+    <a href="/customer/profile">Profile</a>
+    <a href="/customer/orders">Orders</a>
+    <a href="/cart">Cart</a>
+    <a href="/signout">Sign out</a>
+  </div>
+</header>
+</html>

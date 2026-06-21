@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/dashboard-head :: dashboard-head}"></head> 
+<body class="bg-gradient-to-br from-yellow-50 to-gray-100">
+
+  <header th:replace="~{fragments/dashboard-header :: dashboard-header}"></header>
+
+  <!-- Main Section -->
+  <section class="pt-28 pb-10 container mx-auto px-6">
+    <div class="flex justify-between text-black items-center mb-4">
+      <h2 class="text-3xl font-bold text-gray-800">📋 Product Dashboard</h2>
+      <a href="/products/add" 
+        class="hover: text-black px-5 py-2 font-semibold transition">
+        <svg class="w-[30px] h-[30px] text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/> 
+        </svg> 
+      </a>
+      
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-200 rounded-xl shadow-md">
+        <thead>
+          <tr class="bg-gradient-to-r from-green-50 to-green-100">
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">ID</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Description</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Category</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Price</th>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Image</th>
+            <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr th:each="product : ${products}" class="hover:bg-gray-50 transition duration-200 border-t">
+            <td th:text="${product.id}" class="px-6 py-3 text-sm text-gray-800"></td>
+            <td th:text="${product.name}" class="px-6 py-3 text-sm text-gray-800"></td>
+            <td th:text="${product.description}" class="px-6 py-3 text-sm text-gray-800"></td>
+            <td th:text="${product.category}" class="px-6 py-3 text-sm text-gray-800"></td>
+            <td th:text="'$' + ${product.price}" class="px-6 py-3 text-sm text-gray-800"></td>
+            <td class="px-6 py-3 text-sm text-gray-800">
+              <img th:if="${product.imageUrl != null}" 
+                   th:src="${product.imageUrl}" 
+                   alt="Product Image" 
+                   class="w-16 h-16 object-cover rounded-md"/>
+            </td>
+            <td class="text-black py-3 flex justify-center gap-3">
+              <a th:href="@{/products/editproduct(id=${product.id})}" 
+                 class="px-4 py-2 text-sm font-semibold hover:shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">
+                  <svg class="w-[30px] h-[30px] hover:text-yellow-500 transition" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                  </svg>
+              </a>
+              <a th:href="@{'/products/delete?id=' + ${product.id}}" 
+                 onclick="return confirm('Are you sure?')"
+                 class="px-4 py-2 text-sm font-semibold hover:shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105">
+                  <svg class="w-[30px] h-[30px] hover:text-yellow-500 transition" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                  </svg>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer th:replace="~{fragments/dashboard-footer :: dashboard-footer}"></footer>
+
+  <script>
+    const toggleButton = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    toggleButton?.addEventListener('click', () => {
+      mobileMenu?.classList.toggle('hidden');
+    });
+
+      // Mobile menu toggle
+  const menuToggle = document.getElementById("menu-toggle");
+
+  menuToggle.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
+  });
+
+  // Profile dropdown toggle
+  const profileToggle = document.getElementById("profileToggle");
+  const profileMenu = document.getElementById("profileMenu");
+
+  profileToggle.addEventListener("click", () => {
+    profileMenu.classList.toggle("hidden");
+  });
+
+  // Close profile dropdown when clicking outside
+  window.addEventListener("click", (e) => {
+    if (!profileToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+      profileMenu.classList.add("hidden");
+    }
+  });
+  </script>
+</body>
+</html>

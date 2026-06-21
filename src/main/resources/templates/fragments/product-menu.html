@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<section th:fragment="product-menu" class="menu-section" id="product-menu">
+  <div class="menu-section__glow" aria-hidden="true"></div>
+  <div class="container menu-section__inner">
+    <header class="menu-section__head">
+      <span class="menu-section__label">House menu</span>
+      <h2>Order your favourite drink</h2>
+      <p>Tap a category, pick your item, and add it to your bag. Size & notes can be set in the cart.</p>
+    </header>
+
+    <div class="menu-tabs category-tabs">
+      <button type="button" class="menu-tab tab-btn active" data-category="All">
+        <i class="fa-solid fa-border-all"></i> All
+      </button>
+      <button type="button" class="menu-tab tab-btn" data-category="Coffee">
+        <i class="fa-solid fa-mug-hot"></i> Coffee
+      </button>
+      <button type="button" class="menu-tab tab-btn" data-category="Cake">
+        <i class="fa-solid fa-cookie-bite"></i> Cake
+      </button>
+      <button type="button" class="menu-tab tab-btn" data-category="Drink">
+        <i class="fa-solid fa-glass-water"></i> Drinks
+      </button>
+    </div>
+
+    <div class="menu-grid product-grid">
+      <article th:each="product : ${products}"
+               class="menu-card product-card"
+               th:data-category="${product.category}">
+        <div class="menu-card__media">
+          <img th:src="${product.imageUrl}" th:alt="${product.name}" loading="lazy"
+               onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80';">
+          <div class="menu-card__overlay"></div>
+          <span class="menu-card__category" th:text="${product.category}">Coffee</span>
+          <span class="menu-card__price-tag" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">$0.00</span>
+          <span th:if="${product.stock <= 10 and product.stock > 0}" class="menu-card__stock-warn">Only [[${product.stock}]] left</span>
+          <span th:if="${product.stock <= 0}" class="menu-card__sold-out">Sold out</span>
+        </div>
+        <div class="menu-card__body">
+          <h3 th:text="${product.name}">Product</h3>
+          <p th:text="${product.description}">Description</p>
+          <button type="button"
+                  th:if="${product.stock > 0}"
+                  class="menu-card__add add-to-cart-btn"
+                  th:data-id="${product.id}"
+                  th:data-name="${product.name}"
+                  th:data-price="${product.price}"
+                  th:data-image-url="${product.imageUrl}"
+                  th:data-stock="${product.stock}">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add to bag</span>
+          </button>
+          <button type="button" th:if="${product.stock <= 0}" class="menu-card__add" disabled style="opacity:0.5;cursor:not-allowed;">
+            Unavailable
+          </button>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+</html>
