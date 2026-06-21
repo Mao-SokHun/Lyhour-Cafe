@@ -34,4 +34,5 @@ build/
 
 ### Local secrets & data ###
 data/
-src/main/resources/application-neon.properties
+.env
+config/
