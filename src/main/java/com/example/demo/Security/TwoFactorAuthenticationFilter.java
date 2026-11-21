@@ -19,7 +19,7 @@ public class TwoFactorAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String SESSION_VERIFIED = "TWO_FACTOR_VERIFIED";
     private static final Set<String> ALLOWED = Set.of(
-            "/2fa", "/2fa/verify", "/signout", "/perform_logout", "/css/", "/javascript/", "/images/", "/ws/");
+            "/2fa", "/2fa/verify", "/signout", "/perform_logout", "/css/", "/javascript/", "/images/", "/ws/", "/telegram-app", "/api/");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

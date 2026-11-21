@@ -64,6 +64,30 @@ public class NotificationService {
             message.setText(body);
             mailSender.get().send(message);
         }
+
+        // Notify customer on Telegram if available
+        String tgChatId = resolveCustomerTelegramChatId(order);
+        if (tgChatId != null) {
+            String tgText = """
+                    ☕ <b>Lyhour Coffee — Order #%d Confirmed!</b>
+
+                    Hi %s, we've received your order.
+                    Total: <b>$%.2f</b>
+                    Payment: %s (%s)
+                    Fulfillment: %s
+                    Status: <b>%s</b>
+
+                    We will notify you here when your order is ready!
+                    """.formatted(
+                    order.getId(),
+                    order.getUsername(),
+                    order.getTotalPrice(),
+                    order.getPaymentMethod(),
+                    order.getPaymentStatus(),
+                    order.getFulfillmentType(),
+                    order.getStatus());
+            sendTelegramTo(tgChatId, tgText);
+        }
     }
 
     public void sendReservationConfirmation(Reservation reservation) {
@@ -160,6 +184,14 @@ public class NotificationService {
                 !pushWebhookUrl.isBlank());
     }
 
+    public String resolveBotToken() {
+        String fromDb = appSettingService.get("telegram.bot_token", "");
+        if (!fromDb.isBlank()) {
+            return fromDb;
+        }
+        return telegramBotToken != null ? telegramBotToken : "";
+    }
+
     public String resolveChatId() {
         String fromDb = appSettingService.get("telegram.chat_id", "");
         if (!fromDb.isBlank()) {
@@ -211,17 +243,32 @@ public class NotificationService {
     }
 
     public void sendTelegram(String text) {
-        log.info("TELEGRAM: {}", text);
         String chatId = resolveChatId();
-        if (!telegramEnabled || telegramBotToken.isBlank() || chatId.isBlank()) {
+        sendTelegramTo(chatId, text);
+    }
+
+    public void sendTelegramTo(String chatId, String message) {
+        sendTelegramTo(chatId, message, null);
+    }
+
+    public void sendTelegramTo(String chatId, String message, Object replyMarkup) {
+        log.info("TELEGRAM [to {}]: {}", chatId, message.replace("\n", " | "));
+        String botToken = resolveBotToken();
+        if (botToken.isBlank() || chatId == null || chatId.isBlank()) {
             return;
         }
         try {
-            String url = "https://api.telegram.org/bot" + telegramBotToken + "/sendMessage?chat_id="
-                    + chatId + "&text=" + java.net.URLEncoder.encode(text, java.nio.charset.StandardCharsets.UTF_8);
-            new org.springframework.web.client.RestTemplate().getForObject(url, String.class);
+            String url = "https://api.telegram.org/bot" + botToken + "/sendMessage";
+            var body = new java.util.HashMap<String, Object>();
+            body.put("chat_id", chatId);
+            body.put("text", message);
+            body.put("parse_mode", "HTML");
+            if (replyMarkup != null) {
+                body.put("reply_markup", replyMarkup);
+            }
+            new org.springframework.web.client.RestTemplate().postForObject(url, body, String.class);
         } catch (Exception e) {
-            log.warn("Telegram send failed: {}", e.getMessage());
+            log.warn("Telegram send to {} failed: {}", chatId, e.getMessage());
         }
     }
 
@@ -271,17 +318,79 @@ public class NotificationService {
     }
 
     public void notifyStaffOrder(Order order) {
-        sendTelegram("New order #" + order.getId() + " — $" + order.getTotalPrice() + " (" + order.getPaymentMethod() + ")");
+        String sourceTag = order.getSource() == com.example.demo.Models.OrderSource.TELEGRAM
+                ? "📱 Telegram Mini App"
+                : order.getSource().name();
+        String text = """
+                ☕ <b>New Order #%d</b>
+                Source: <b>%s</b>
+                Customer: %s
+                Total: <b>$%.2f</b> (%s - %s)
+                Fulfillment: %s
+                """.formatted(
+                order.getId(),
+                sourceTag,
+                order.getUsername(),
+                order.getTotalPrice(),
+                order.getPaymentMethod(),
+                order.getPaymentStatus(),
+                order.getFulfillmentType());
+        sendTelegram(text);
         sendPush("New order", "#" + order.getId() + " $" + order.getTotalPrice(), null);
     }
 
     public void notifyCustomerOrderStatus(Order order) {
-        if (order.getCustomer() == null) {
+        if (order == null) {
             return;
         }
-        String title = "Order #" + order.getId();
-        String body = "Status: " + order.getStatus();
-        sendPushToUser(order.getCustomer(), title, body);
+        if (order.getCustomer() != null) {
+            String title = "Order #" + order.getId();
+            String body = "Status: " + order.getStatus();
+            sendPushToUser(order.getCustomer(), title, body);
+        }
+
+        String tgChatId = resolveCustomerTelegramChatId(order);
+        if (tgChatId != null) {
+            String statusIcon = switch (order.getStatus()) {
+                case PENDING -> "⏳";
+                case PREPARING -> "👨‍🍳";
+                case READY -> "🎉";
+                case COMPLETED -> "✅";
+                case CANCELLED -> "❌";
+                default -> "☕";
+            };
+            String msg = """
+                    ☕ <b>Lyhour Coffee</b> %s
+                    Order #<b>%d</b> status is now: <b>%s</b>
+
+                    Total: <b>$%.2f</b> (%s)
+                    Fulfillment: %s
+                    """.formatted(
+                    statusIcon,
+                    order.getId(),
+                    order.getStatus(),
+                    order.getTotalPrice(),
+                    order.getPaymentMethod(),
+                    order.getFulfillmentType());
+
+            if (order.getStatus() == com.example.demo.Models.OrderStatus.READY) {
+                msg += "\n🔔 <b>Your order is ready!</b> Please pick it up at the counter.";
+            } else if (order.getStatus() == com.example.demo.Models.OrderStatus.COMPLETED) {
+                msg += "\n✨ Thank you for choosing Lyhour Coffee! Enjoy your drink!";
+            }
+            sendTelegramTo(tgChatId, msg);
+        }
+    }
+
+    public String resolveCustomerTelegramChatId(Order order) {
+        if (order == null) return null;
+        if (order.getTelegramChatId() != null) {
+            return String.valueOf(order.getTelegramChatId());
+        }
+        if (order.getCustomer() != null && order.getCustomer().getTelegramUserId() != null) {
+            return String.valueOf(order.getCustomer().getTelegramUserId());
+        }
+        return null;
     }
 
     public boolean sendTestTelegram() {

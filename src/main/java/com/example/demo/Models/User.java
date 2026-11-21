@@ -51,6 +51,10 @@ public class User implements UserDetails {
 
     private String pushToken;
 
+    private Long telegramUserId;
+
+    private String telegramUsername;
+
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
@@ -117,6 +121,11 @@ public class User implements UserDetails {
     }
 
     // --- UserDetails Implementation ---
+
+    public Long getTelegramUserId() { return telegramUserId; }
+    public void setTelegramUserId(Long telegramUserId) { this.telegramUserId = telegramUserId; }
+    public String getTelegramUsername() { return telegramUsername; }
+    public void setTelegramUsername(String telegramUsername) { this.telegramUsername = telegramUsername; }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

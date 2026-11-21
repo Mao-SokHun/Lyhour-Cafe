@@ -106,6 +106,10 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/v1/mobile/config").permitAll()
 
+                .requestMatchers("/api/v1/telegram/**").permitAll()
+
+                .requestMatchers("/telegram-app", "/telegram-app/**").permitAll()
+
                 .requestMatchers("/api/v1/stripe/webhook", "/api/v1/payments/stripe/status").permitAll()
 
                 .requestMatchers("/api/v1/products/**", "/api/v1/branches/**").permitAll()
@@ -170,7 +174,12 @@ public class SecurityConfig {
 
                     "/api/**"))
 
-            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.disable())
+                .contentSecurityPolicy(csp -> csp
+                    .policyDirectives("frame-ancestors 'self' https://web.telegram.org https://*.telegram.org;")
+                )
+            );
 
 
 

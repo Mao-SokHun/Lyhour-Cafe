@@ -71,6 +71,8 @@ public class Order {
 
     private String paymentReference;
 
+    private Long telegramChatId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")
     private Branch branch;
@@ -99,6 +101,9 @@ public class Order {
     }
 
     // Getters and Setters
+    public Long getTelegramChatId() { return telegramChatId; }
+    public void setTelegramChatId(Long telegramChatId) { this.telegramChatId = telegramChatId; }
+
     public Long getId() {
         return id;
     }

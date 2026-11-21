@@ -2,19 +2,157 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title th:text="'Table ' + ${table.tableNumber} + ' QR'">Table QR</title>
+  <title th:text="'Table ' + ${table.tableNumber} + ' QR Stand — Lyhour Coffee'">Table QR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Cormorant+Garamond:wght@700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: system-ui, sans-serif; text-align: center; padding: 2rem; }
-    img { width: 280px; height: 280px; }
-    @media print { .no-print { display: none; } }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: #f4efe8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+      color: #1f1712;
+    }
+    .stand-card {
+      background: #fffcf8;
+      border: 2px solid #3d2d22;
+      border-radius: 24px;
+      width: 360px;
+      padding: 2.25rem 1.75rem;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(31, 23, 18, 0.12);
+      position: relative;
+    }
+    .brand-header {
+      margin-bottom: 1rem;
+    }
+    .brand-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2a1d14;
+      line-height: 1.1;
+    }
+    .brand-sub {
+      font-size: 0.85rem;
+      color: #7a6e65;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.25rem;
+    }
+    .table-badge {
+      display: inline-block;
+      background: #2a1d14;
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 700;
+      padding: 0.35rem 1.25rem;
+      border-radius: 999px;
+      margin: 0.75rem 0;
+      letter-spacing: 0.03em;
+    }
+    .instruction {
+      font-size: 0.92rem;
+      color: #55483e;
+      margin-bottom: 1.25rem;
+      line-height: 1.4;
+    }
+    .qr-frame {
+      background: #ffffff;
+      border: 1px solid #e2d8cc;
+      border-radius: 16px;
+      padding: 1rem;
+      display: inline-block;
+      margin-bottom: 1rem;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+    .qr-frame img {
+      width: 230px;
+      height: 230px;
+      display: block;
+    }
+    .steps {
+      display: flex;
+      justify-content: space-around;
+      font-size: 0.75rem;
+      color: #7a6e65;
+      margin: 0.75rem 0 1rem;
+      border-top: 1px solid #e8decb;
+      padding-top: 0.75rem;
+    }
+    .telegram-callout {
+      background: #eef7fc;
+      border: 1px solid #bce2f7;
+      color: #0b699e;
+      border-radius: 12px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .print-btn {
+      margin-top: 1.5rem;
+      background: #c67b4a;
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.75rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(198, 123, 74, 0.35);
+    }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .stand-card { box-shadow: none; border-color: #000; }
+      .no-print { display: none !important; }
+    }
   </style>
 </head>
 <body onload="window.print()">
-  <h1>Lyhour Coffee</h1>
-  <h2 th:text="'Table ' + ${table.tableNumber}">Table T1</h2>
-  <p>Scan to order · Pay at table</p>
-  <img th:src="@{'/admin/tables/' + ${table.id} + '/qr.png'}" alt="QR code">
-  <p th:text="${menuUrl}" style="font-size:0.75rem;color:#666;word-break:break-all;"></p>
-  <button class="no-print" onclick="window.print()">Print</button>
+  <div class="stand-card">
+    <div class="brand-header">
+      <div class="brand-title">Lyhour Coffee</div>
+      <div class="brand-sub">Slow Roast & Artisan Bakery</div>
+    </div>
+
+    <div class="table-badge">
+      Table <span th:text="${table.tableNumber}">T1</span>
+    </div>
+
+    <p class="instruction">
+      Scan with Camera or Telegram to browse our menu & order directly from your table.
+    </p>
+
+    <div class="qr-frame">
+      <img th:src="@{'/admin/tables/' + ${table.id} + '/qr.png'}" alt="Table QR Code">
+    </div>
+
+    <div class="steps">
+      <div><b>1</b> Scan QR</div>
+      <div>→</div>
+      <div><b>2</b> Pick Items</div>
+      <div>→</div>
+      <div><b>3</b> Enjoy at Table</div>
+    </div>
+
+    <div class="telegram-callout">
+      <span>📱 Open in Telegram: <b>@LyhourCafe_bot</b></span>
+    </div>
+
+    <p th:text="${menuUrl}" style="font-size:0.7rem;color:#999;margin-top:0.6rem;word-break:break-all;"></p>
+
+    <div class="no-print">
+      <button class="print-btn" onclick="window.print()">🖨️ Print Table Stand</button>
+    </div>
+  </div>
 </body>
 </html>

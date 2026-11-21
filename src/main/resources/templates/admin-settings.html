@@ -9,10 +9,38 @@
 
     <div th:if="${param.saved}" class="alert alert-success">Setting saved.</div>
     <div th:if="${param.backup}" class="alert alert-success">Backup completed.</div>
+    <div th:if="${param.telegramMiniApp}" class="alert alert-success">Telegram Mini App menu button & bot commands configured successfully!</div>
     <div th:if="${param.telegram}" class="alert" th:classappend="${param.telegram[0] == 'ok' or param.telegram[0] == 'linked'} ? 'alert-success' : 'alert-danger'"
          th:text="${param.telegram[0] == 'ok'} ? 'Telegram test sent.' : (${param.telegram[0] == 'linked'} ? 'Telegram connected — chat ID saved.' : (${param.telegram[0] == 'nomessage'} ? 'Open t.me/LyhourCafe_bot, send /start, then click Connect again.' : 'Telegram not configured — set APP_TELEGRAM_* env vars.'))"></div>
     <div th:if="${param.push}" class="alert" th:classappend="${param.push[0] == 'ok'} ? 'alert-success' : 'alert-danger'"
          th:text="${param.push[0] == 'ok'} ? 'Push test sent (webhook or FCM ready).' : 'Push not configured — set APP_PUSH_ENABLED and FCM or webhook.'"></div>
+
+    <div class="card mb-3">
+      <h2 class="h5 mb-2"><i class="fa-brands fa-telegram" style="color:#2AABEE;"></i> Telegram Mini App — Lyhour Coffee</h2>
+      <p class="text-muted mb-2">Customers can browse your cafe menu, customize coffee, order with Bakong KHQR or Cash, and track their order live inside Telegram.</p>
+      <table class="mb-3">
+        <tr><td>Mini App URL</td><td><code>/telegram-app</code></td></tr>
+        <tr><td>Direct Web Link</td><td><a href="/telegram-app" target="_blank">Open /telegram-app in browser</a></td></tr>
+        <tr><td>Bot Menu Button</td><td>"☕ Order Coffee" (launches web_app directly in bot chat)</td></tr>
+        <tr><td>Supported Payments</td><td>Bakong KHQR, Cash / Pay at Pickup, Stripe</td></tr>
+      </table>
+      <div class="flex gap-2 flex-wrap mb-3">
+        <form th:action="@{/admin/telegram/setup-menu-button}" method="post">
+          <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Configure Bot Menu Button</button>
+        </form>
+        <a href="/telegram-app" target="_blank" class="btn btn-outline btn-sm"><i class="fa-solid fa-eye"></i> Preview Mini App</a>
+      </div>
+      <div class="alert alert-info" style="font-size:0.85rem;margin-bottom:0;">
+        <strong>How to link with @BotFather:</strong>
+        <ol style="margin-left:1.25rem;margin-top:0.35rem;">
+          <li>Open <a href="https://t.me/BotFather" target="_blank">@BotFather</a> in Telegram</li>
+          <li>Send <code>/newapp</code> → choose your bot <code>@LyhourCafe_bot</code></li>
+          <li>Enter Title: <code>Lyhour Coffee</code>, Description: <code>Order fresh coffee & pastries</code></li>
+          <li>Enter Web App URL: <code>https://your-domain.onrender.com/telegram-app</code> (or local tunnel)</li>
+          <li>Or send <code>/setmenubutton</code> → choose bot → enter URL <code>https://your-domain.onrender.com/telegram-app</code></li>
+        </ol>
+      </div>
+    </div>
 
     <div class="card mb-3">
       <h2 class="h5 mb-2">Telegram — @LyhourCafe_bot</h2>

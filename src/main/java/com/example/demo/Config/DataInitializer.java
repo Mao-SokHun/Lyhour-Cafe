@@ -50,6 +50,7 @@ public class DataInitializer {
                 for (int i = 1; i <= 8; i++) {
                     CafeTable table = new CafeTable();
                     table.setTableNumber("T" + i);
+                    table.setQrCode("T" + i + "-LYHOUR");
                     table.setCapacity(i <= 4 ? 4 : 6);
                     table.setStatus(TableStatus.AVAILABLE);
                     table.setBranch(mainBranch);

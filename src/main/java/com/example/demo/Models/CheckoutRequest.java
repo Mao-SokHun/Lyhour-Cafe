@@ -11,6 +11,8 @@ public class CheckoutRequest {
     private FulfillmentType fulfillmentType = FulfillmentType.PICKUP;
     private String deliveryAddress;
     private String guestName;
+    private Long telegramChatId;
+    private OrderSource source;
 
     public List<CartItemDto> getItems() { return items; }
     public void setItems(List<CartItemDto> items) { this.items = items; }
@@ -28,4 +30,8 @@ public class CheckoutRequest {
     public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
     public String getGuestName() { return guestName; }
     public void setGuestName(String guestName) { this.guestName = guestName; }
+    public Long getTelegramChatId() { return telegramChatId; }
+    public void setTelegramChatId(Long telegramChatId) { this.telegramChatId = telegramChatId; }
+    public OrderSource getSource() { return source; }
+    public void setSource(OrderSource source) { this.source = source; }
 }

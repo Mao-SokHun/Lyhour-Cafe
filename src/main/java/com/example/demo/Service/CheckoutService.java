@@ -33,7 +33,9 @@ public class CheckoutService {
                 ? request.getPaymentMethod()
                 : PaymentMethod.PAY_AT_PICKUP;
 
-        OrderSource source = request.getTableId() != null ? OrderSource.QR_TABLE : OrderSource.ONLINE;
+        OrderSource source = request.getSource() != null
+                ? request.getSource()
+                : (request.getTableId() != null ? OrderSource.QR_TABLE : OrderSource.ONLINE);
         FulfillmentType fulfillment = request.getFulfillmentType();
         if (request.getTableId() != null && (fulfillment == null || fulfillment == FulfillmentType.PICKUP)) {
             fulfillment = FulfillmentType.DINE_IN;
@@ -51,6 +53,11 @@ public class CheckoutService {
 
         if (request.getGuestName() != null && !request.getGuestName().isBlank()) {
             orderService.updateGuestDisplayName(order, request.getGuestName().trim());
+        }
+
+        if (request.getTelegramChatId() != null) {
+            order.setTelegramChatId(request.getTelegramChatId());
+            orderService.save(order);
         }
 
         if (method == PaymentMethod.STRIPE) {
@@ -71,6 +78,8 @@ public class CheckoutService {
         String successUrl = "/order/success?orderId=" + order.getId();
         if (source == OrderSource.QR_TABLE) {
             successUrl += "&qr=1";
+        } else if (source == OrderSource.TELEGRAM) {
+            successUrl = "/telegram-app?orderSuccess=" + order.getId();
         }
         return new CheckoutResult(order, successUrl);
     }

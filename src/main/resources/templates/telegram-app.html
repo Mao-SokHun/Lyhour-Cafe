@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Lyhour Coffee &amp; Cake — Telegram Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --bg-canvas: #0f0e0d;
+      --bg-surface: #1b1815;
+      --bg-surface-elevated: #24201c;
+      --bg-surface-active: #2f2a24;
+      --bg-input: #161412;
+      --border-subtle: #2d2722;
+      --border-focus: #c48452;
+      --accent: #d49a6a;
+      --accent-hover: #e2ac80;
+      --accent-gradient: linear-gradient(135deg, #d49a6a 0%, #a26435 100%);
+      --accent-soft: rgba(212, 154, 106, 0.14);
+      --accent-gold: #f2c179;
+      --green: #2ecc71;
+      --green-soft: rgba(46, 204, 113, 0.15);
+      --text-main: #ffffff;
+      --text-sub: #c9beb4;
+      --text-muted: #877c74;
+      --radius-xl: 22px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.35);
+      --shadow-glow: 0 4px 20px rgba(212, 154, 106, 0.25);
+      --font-family: 'Plus Jakarta Sans', 'Kantumruy Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: #070605;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.45;
+    }
+
+    /* Constrain to Mobile App Shell on Desktop */
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      background-color: var(--bg-canvas);
+      position: relative;
+      padding-bottom: 110px;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.7);
+      border-left: 1px solid rgba(255, 255, 255, 0.04);
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    /* Top Browser Notice (only on standard browser preview) */
+    .env-badge {
+      display: none;
+      background: #1f1b16;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.35rem 1rem;
+      font-size: 0.72rem;
+      color: var(--accent-gold);
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* App Header */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15, 14, 13, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.75rem 1rem;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: var(--accent-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.25rem;
+      box-shadow: var(--shadow-glow);
+      flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .brand-text h1 span {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .brand-sub {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-weight: 600;
+      font-size: 0.68rem;
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      padding: 0.25rem 0.7rem 0.25rem 0.35rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-chip:active {
+      transform: scale(0.97);
+      background: var(--bg-surface-elevated);
+    }
+
+    .user-chip-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.78rem;
+      overflow: hidden;
+    }
+
+    .user-chip-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-chip-meta {
+      line-height: 1.15;
+    }
+
+    .user-chip-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-main);
+      max-width: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-chip-pts {
+      font-size: 0.68rem;
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+
+    /* Segmented Order Mode Pills */
+    .mode-bar {
+      margin: 0.85rem 1rem 0.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 0.3rem;
+      display: flex;
+      gap: 0.3rem;
+    }
+
+    .mode-pill {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 0.55rem 0.4rem;
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .mode-pill.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(212, 154, 106, 0.35);
+    }
+
+    /* Compact Dine-in Table Row (Only 1 sleek row, NO duplicate banners!) */
+    .table-compact-strip {
+      margin: 0 1rem 0.5rem;
+      background: rgba(212, 154, 106, 0.08);
+      border: 1px solid rgba(212, 154, 106, 0.25);
+      border-radius: var(--radius-md);
+      padding: 0.45rem 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .table-compact-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .table-compact-right {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .table-dropdown {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      outline: none;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .btn-mini-scan {
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.35rem 0.65rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-mini-scan:active {
+      transform: scale(0.95);
+      background: var(--accent-hover);
+    }
+
+    /* Delivery address input */
+    .delivery-strip {
+      margin: 0 1rem 0.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.45rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .delivery-strip input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-size: 0.82rem;
+      font-family: inherit;
+    }
+
+    /* Search Bar */
+    .search-wrap {
+      margin: 0.5rem 1rem 0.65rem;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 0.65rem 1rem 0.65rem 2.45rem;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--border-focus);
+      background: var(--bg-surface-elevated);
+      box-shadow: 0 0 0 3px rgba(212, 154, 106, 0.12);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+
+    /* Category Filter Carousel */
+    .category-scroll {
+      display: flex;
+      gap: 0.45rem;
+      padding: 0 1rem 0.65rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .category-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-chip {
+      white-space: nowrap;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      color: var(--text-sub);
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s;
+    }
+
+    .cat-chip.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(212, 154, 106, 0.3);
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      padding: 0 1rem;
+    }
+
+    .product-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .product-card:active {
+      transform: scale(0.975);
+      border-color: var(--accent);
+    }
+
+    .product-thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      position: relative;
+      background: #1a1613;
+      overflow: hidden;
+    }
+
+    .product-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-thumb img {
+      transform: scale(1.05);
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(15, 14, 13, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--accent-gold);
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .product-info {
+      padding: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .product-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 2px;
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .product-price {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+    }
+
+    .btn-add-plus {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent-gradient);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(212, 154, 106, 0.35);
+      transition: all 0.2s;
+    }
+
+    .btn-add-plus:active {
+      transform: scale(0.9);
+      background: var(--accent-hover);
+    }
+
+    /* Floating Bag Capsule (Appears gracefully when cart > 0) */
+    .floating-cart-capsule {
+      position: fixed;
+      bottom: 74px;
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      width: calc(100% - 2rem);
+      max-width: 448px;
+      background: var(--accent-gradient);
+      border-radius: var(--radius-xl);
+      padding: 0.75rem 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+      box-shadow: 0 8px 30px rgba(212, 154, 106, 0.45);
+      z-index: 70;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .floating-cart-capsule.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .capsule-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .capsule-count {
+      background: rgba(0, 0, 0, 0.25);
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .capsule-total {
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .capsule-right {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* Fixed Bottom Navigation Dock */
+    .bottom-dock {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: rgba(15, 14, 13, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-subtle);
+      padding: 0.5rem 1rem 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 60;
+    }
+
+    .dock-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+    }
+
+    .dock-tab i {
+      font-size: 1.15rem;
+    }
+
+    .dock-tab.active {
+      color: var(--accent);
+    }
+
+    .dock-tab:active {
+      transform: scale(0.92);
+    }
+
+    /* Modern Bottom Sheet (Apple / Telegram Style) */
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .sheet-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sheet-modal {
+      width: 100%;
+      max-width: 480px;
+      max-height: 86vh;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      border-radius: 26px 26px 0 0;
+      padding: 0.75rem 1.25rem 1.5rem;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sheet-backdrop.open .sheet-modal {
+      transform: translateY(0);
+    }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      border-radius: 999px;
+      background: #3e3731;
+      margin: 0 auto 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .sheet-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .sheet-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .sheet-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .sheet-close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* Option Pill Groups */
+    .opt-group {
+      margin-bottom: 1.15rem;
+    }
+
+    .opt-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .opt-pills-row {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .opt-choice {
+      flex: 1;
+      min-width: 65px;
+      text-align: center;
+      padding: 0.6rem 0.5rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-sub);
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .opt-choice.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent-gold);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .text-input-field {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.7rem 0.9rem;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .text-input-field:focus {
+      border-color: var(--border-focus);
+    }
+
+    /* Qty Bar in Customizer */
+    .qty-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .qty-stepper {
+      display: flex;
+      align-items: center;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 0.2rem;
+    }
+
+    .btn-step {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .btn-step:active {
+      background: var(--bg-surface-active);
+    }
+
+    .qty-display {
+      width: 32px;
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .btn-cta-gold {
+      flex: 1;
+      border: none;
+      background: var(--accent-gradient);
+      color: #fff;
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-lg);
+      font-size: 0.92rem;
+      font-weight: 800;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(212, 154, 106, 0.35);
+      transition: all 0.2s;
+    }
+
+    .btn-cta-gold:active {
+      transform: scale(0.98);
+      background: var(--accent-hover);
+    }
+
+    /* Cart Items List */
+    .cart-items-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      max-height: 34vh;
+      overflow-y: auto;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .cart-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.8rem;
+    }
+
+    .cart-row-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-row-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .cart-row-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .cart-row-price {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      margin-top: 2px;
+    }
+
+    /* Payment Radio Cards */
+    .pay-cards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .pay-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pay-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .pay-card-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* Bill Summary */
+    .bill-card {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+    }
+
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-sub);
+    }
+
+    .bill-row.total {
+      margin-top: 0.35rem;
+      padding-top: 0.45rem;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .bill-row.total span:last-child {
+      color: var(--accent-gold);
+      font-size: 1.05rem;
+    }
+
+    /* Order Tracker Visual Stepper */
+    .tracker-stepper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 1.25rem 0;
+      position: relative;
+    }
+
+    .tracker-stepper::before {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      right: 20px;
+      height: 2px;
+      background: var(--border-subtle);
+      z-index: 1;
+    }
+
+    .track-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .track-node {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-surface-elevated);
+      border: 2px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .track-step.done .track-node {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .track-step.active .track-node {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(212, 154, 106, 0.6);
+      animation: pulse-node 1.5s infinite;
+    }
+
+    @keyframes pulse-node {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .track-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .track-step.active .track-label,
+    .track-step.done .track-label {
+      color: var(--text-main);
+    }
+
+    /* Camera Viewfinder */
+    .viewfinder {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #000;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .viewfinder video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .laser-line {
+      position: absolute;
+      left: 10%;
+      width: 80%;
+      height: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+      animation: scan-anim 2s infinite ease-in-out;
+    }
+
+    @keyframes scan-anim {
+      0% { top: 15%; opacity: 0.3; }
+      50% { top: 85%; opacity: 1; }
+      100% { top: 15%; opacity: 0.3; }
+    }
+
+    /* Toast Notification */
+    .app-toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-60px);
+      background: rgba(36, 32, 28, 0.96);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--accent);
+      color: #fff;
+      padding: 0.6rem 1.15rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      z-index: 999;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .app-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Shell Wrapper -->
+  <div class="app-shell">
+
+    <!-- Browser Demo Preview Bar (Only when tested in standard desktop browser) -->
+    <div id="env-badge" class="env-badge">
+      <span><i class="fa-brands fa-telegram"></i> Telegram Mini App</span>
+      <span style="font-weight:700;">Lyhour Coffee</span>
+    </div>
+
+    <!-- Clean Header -->
+    <header class="app-header">
+      <div class="header-row">
+        <div class="brand-box">
+          <div class="brand-logo">
+            <i class="fa-solid fa-mug-hot"></i>
+          </div>
+          <div class="brand-text">
+            <h1>Lyhour Coffee <span>កាហ្វេ &amp; នំ</span></h1>
+            <div class="brand-sub">
+              <span class="status-badge"><span class="status-dot"></span> បើក Open</span>
+              <span>· 7:00 – 21:00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="user-chip" id="user-profile-chip" onclick="showMyOrders()">
+          <div class="user-chip-avatar" id="user-avatar">G</div>
+          <div class="user-chip-meta">
+            <div class="user-chip-name" id="user-display-name">Guest</div>
+            <div class="user-chip-pts" id="user-loyalty-tier">⭐ 20 pts</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Segmented Order Mode (Pickup | Dine-in | Delivery) -->
+    <div class="mode-bar">
+      <button type="button" class="mode-pill" data-mode="PICKUP" onclick="setFulfillment('PICKUP')">
+        <i class="fa-solid fa-bag-shopping"></i> ទិញខ្ចប់ Pickup
+      </button>
+      <button type="button" class="mode-pill active" data-mode="DINE_IN" onclick="setFulfillment('DINE_IN')">
+        <i class="fa-solid fa-utensils"></i> ញ៉ាំនៅហាង Dine-in
+      </button>
+      <button type="button" class="mode-pill" data-mode="DELIVERY" onclick="setFulfillment('DELIVERY')">
+        <i class="fa-solid fa-motorcycle"></i> ដឹក Delivery
+      </button>
+    </div>
+
+    <!-- Single Compact Table Selector Row (Shown when Dine-in is active) -->
+    <div id="table-strip" class="table-compact-strip">
+      <div class="table-compact-label" id="table-display-badge">
+        <i class="fa-solid fa-chair"></i>
+        <span>តុ Table:</span>
+      </div>
+      <div class="table-compact-right">
+        <select id="selected-table-id" class="table-dropdown" onchange="onTableSelect(this.value)">
+          <option th:each="t : ${tables}" th:value="${t.id}" th:text="${t.tableNumber + ' (' + t.capacity + ' កៅអី)'}"></option>
+        </select>
+        <button type="button" class="btn-mini-scan" onclick="startScanTable()">
+          <i class="fa-solid fa-camera"></i> ស្កេន Scan
+        </button>
+      </div>
+    </div>
+
+    <!-- Delivery Address Row (Only shown when Delivery is active) -->
+    <div id="delivery-strip" class="delivery-strip" style="display:none;">
+      <i class="fa-solid fa-location-dot" style="color:var(--accent);"></i>
+      <input type="text" id="delivery-address-input" placeholder="បញ្ចូលអាសយដ្ឋានដឹក &amp; លេខទូរសព្ទ..." />
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-wrap">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <input type="text" id="menu-search" class="search-input" placeholder="ស្វែងរកកាហ្វេ, តែ, នំ / Search menu..." oninput="filterMenu()" />
+    </div>
+
+    <!-- Category Chips Carousel -->
+    <div class="category-scroll">
+      <button class="cat-chip active" onclick="filterCategory('ALL', this)">
+        <i class="fa-solid fa-fire-flame-curved"></i> ទាំងអស់ All
+      </button>
+      <button class="cat-chip" th:each="cat : ${categories}" th:attr="onclick='filterCategory(\'' + ${cat} + '\', this)'">
+        <i class="fa-solid fa-mug-saucer" th:if="${#strings.containsIgnoreCase(cat, 'coffee')}"></i>
+        <i class="fa-solid fa-cake-candles" th:if="${#strings.containsIgnoreCase(cat, 'cake')}"></i>
+        <i class="fa-solid fa-glass-water" th:if="${!#strings.containsIgnoreCase(cat, 'coffee') and !#strings.containsIgnoreCase(cat, 'cake')}"></i>
+        <span th:text="${cat}">Coffee</span>
+      </button>
+    </div>
+
+    <!-- Product Grid (Clean 2-Column Responsive Cards) -->
+    <div class="product-grid" id="product-container">
+      <div th:each="product : ${products}"
+           class="product-card"
+           th:attr="data-id=${product.id}, data-name=${product.name}, data-price=${product.price}, data-category=${product.category}, data-img=${product.imageUrl}, data-desc=${product.description}"
+           onclick="openCustomizerFromEl(this)">
+        <div class="product-thumb">
+          <img th:src="${product.imageUrl}" th:alt="${product.name}" onerror="this.src='https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400';" loading="lazy" />
+          <span class="product-badge" th:text="${product.category}">Coffee</span>
+        </div>
+        <div class="product-info">
+          <div>
+            <h3 class="product-name" th:text="${product.name}">Latte</h3>
+            <p class="product-desc" th:text="${product.description}">Smooth espresso with velvety steamed milk.</p>
+          </div>
+          <div class="product-bottom">
+            <span class="product-price" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">$4.75</span>
+            <button type="button" class="btn-add-plus" title="Add to Bag">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Bag Capsule (Only pops up when items in bag) -->
+    <div class="floating-cart-capsule" id="floating-cart" onclick="openCart()">
+      <div class="capsule-left">
+        <span class="capsule-count" id="capsule-count">0</span>
+        <span class="capsule-total" id="capsule-total">$0.00</span>
+      </div>
+      <div class="capsule-right">
+        <span>មើលកន្ត្រក View Bag</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </div>
+    </div>
+
+    <!-- Fixed Bottom Dock -->
+    <nav class="bottom-dock">
+      <button class="dock-tab active" onclick="showMenuTab()">
+        <i class="fa-solid fa-mug-saucer"></i>
+        <span>ម៉ឺនុយ Menu</span>
+      </button>
+      <button class="dock-tab" onclick="startScanTable()">
+        <i class="fa-solid fa-qrcode"></i>
+        <span>ស្កេនតុ Scan QR</span>
+      </button>
+      <button class="dock-tab" onclick="showMyOrders()">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span>ប្រវត្តិ Orders</span>
+      </button>
+      <button class="dock-tab" onclick="showInfoModal()">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>ហាង Info</span>
+      </button>
+    </nav>
+
+  </div> <!-- End App Shell -->
+
+  <!-- DRINK CUSTOMIZER BOTTOM SHEET -->
+  <div class="sheet-backdrop" id="customizer-modal" onclick="closeSheetOnBackdrop(event, this)">
+    <div class="sheet-modal">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <div>
+          <h2 class="sheet-title" id="modal-product-name">Latte</h2>
+          <div class="sheet-subtitle" id="modal-product-price" style="color:var(--accent-gold);font-weight:800;font-size:1.05rem;">$4.75</div>
+        </div>
+        <button class="sheet-close-btn" onclick="closeModal('customizer-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Size -->
+      <div class="opt-group">
+        <div class="opt-title"><span>ទំហំកែវ Cup Size</span></div>
+        <div class="opt-pills-row" id="size-options">
+          <button type="button" class="opt-choice" data-size="Small" data-delta="-0.50" onclick="selectSize(this)">តូច Small (−$0.50)</button>
+          <button type="button" class="opt-choice active" data-size="Medium" data-delta="0" onclick="selectSize(this)">កណ្ដាល Regular</button>
+          <button type="button" class="opt-choice" data-size="Large" data-delta="1.00" onclick="selectSize(this)">ធំ Large (+$1.00)</button>
+        </div>
+      </div>
+
+      <!-- Sweetness -->
+      <div class="opt-group">
+        <div class="opt-title"><span>កម្រិតផ្អែម Sweetness</span></div>
+        <div class="opt-pills-row" id="sugar-options">
+          <button type="button" class="opt-choice" data-val="0%" onclick="selectOption('sugar', this)">0%</button>
+          <button type="button" class="opt-choice" data-val="25%" onclick="selectOption('sugar', this)">25%</button>
+          <button type="button" class="opt-choice" data-val="50%" onclick="selectOption('sugar', this)">50%</button>
+          <button type="button" class="opt-choice active" data-val="100%" onclick="selectOption('sugar', this)">100%</button>
+        </div>
+      </div>
+
+      <!-- Ice -->
+      <div class="opt-group">
+        <div class="opt-title"><span>កម្រិតទឹកកក Ice Level</span></div>
+        <div class="opt-pills-row" id="ice-options">
+          <button type="button" class="opt-choice active" data-val="Normal Ice" onclick="selectOption('ice', this)">ទឹកកកល្មម Normal</button>
+          <button type="button" class="opt-choice" data-val="Less Ice" onclick="selectOption('ice', this)">ទឹកកកតិច Less</button>
+          <button type="button" class="opt-choice" data-val="No Ice" onclick="selectOption('ice', this)">គ្មានទឹកកក No Ice</button>
+          <button type="button" class="opt-choice" data-val="Hot" onclick="selectOption('ice', this)">ក្ដៅ Hot ☕</button>
+        </div>
+      </div>
+
+      <!-- Special instructions note -->
+      <div class="opt-group">
+        <div class="opt-title"><span>ចំណាំពិសេស Note</span></div>
+        <input type="text" id="modal-item-note" class="text-input-field" placeholder="ឧទាហរណ៍៖ ដាក់ទឹកដោះគោអូត, កុំយកពពុះ..." />
+      </div>
+
+      <!-- Quantity + Action button -->
+      <div class="qty-bar">
+        <div class="qty-stepper">
+          <button type="button" class="btn-step" onclick="changeCustomizerQty(-1)">−</button>
+          <span class="qty-display" id="modal-qty">1</span>
+          <button type="button" class="btn-step" onclick="changeCustomizerQty(1)">+</button>
+        </div>
+        <button type="button" class="btn-cta-gold" onclick="addConfiguredItemToCart()">
+          <span id="modal-add-btn-text">ដាក់ក្នុងកន្ត្រក Add to Bag • $4.75</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- YOUR BAG / CART BOTTOM SHEET -->
+  <div class="sheet-backdrop" id="cart-modal" onclick="closeSheetOnBackdrop(event, this)">
+    <div class="sheet-modal">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <div>
+          <h2 class="sheet-title">កន្ត្រកទំនិញ Your Bag</h2>
+          <div class="sheet-subtitle" id="cart-fulfillment-label">☕ Store Pickup</div>
+        </div>
+        <button class="sheet-close-btn" onclick="closeModal('cart-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Item rows -->
+      <div id="cart-items-list" class="cart-items-container">
+        <!-- Dynamically injected -->
+      </div>
+
+      <!-- Promo code input -->
+      <div style="display:flex;gap:0.45rem;margin-bottom:0.75rem;">
+        <input type="text" id="promo-input" class="text-input-field" style="text-transform:uppercase;" placeholder="កូដបញ្ចុះតម្លៃ Promo (e.g. WELCOME10)" />
+        <button type="button" class="btn-cta-gold" style="flex:initial;padding:0 1.15rem;font-size:0.82rem;" onclick="applyPromo()">បញ្ចូល Apply</button>
+      </div>
+
+      <!-- Bill summary -->
+      <div class="bill-card">
+        <div class="bill-row"><span>តម្លៃសរុប Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+        <div class="bill-row" id="discount-line" style="display:none;color:var(--green);"><span>បញ្ចុះតម្លៃ Discount</span><span id="cart-discount">-$0.00</span></div>
+        <div class="bill-row"><span>ពន្ធ Tax (10%)</span><span id="cart-tax">$0.00</span></div>
+        <div class="bill-row" id="delivery-fee-line" style="display:none;"><span>ថ្លៃដឹក Delivery</span><span>$3.00</span></div>
+        <div class="bill-row total"><span>សរុបរួម Total</span><span id="cart-total">$0.00</span></div>
+      </div>
+
+      <!-- Payment Selection -->
+      <div style="margin-top:0.85rem;">
+        <div class="opt-title"><span>វិធីសាស្ត្រទូទាត់ Payment Method</span></div>
+        <div class="pay-cards-grid">
+          <label class="pay-card selected" onclick="selectPayment('BAKONG', this)" th:if="${bakongEnabled}">
+            <div class="pay-card-left">
+              <i class="fa-solid fa-qrcode" style="color:#e74c3c;font-size:1.15rem;"></i>
+              <div>
+                <div>Bakong KHQR</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);font-weight:500;">ABA, ACLEDA, Wing &amp; All Banks</div>
+              </div>
+            </div>
+            <input type="radio" name="payMethod" value="BAKONG" checked style="accent-color:var(--accent);" />
+          </label>
+          <label class="pay-card" onclick="selectPayment('PAY_AT_PICKUP', this)">
+            <div class="pay-card-left">
+              <i class="fa-solid fa-money-bill-wave" style="color:var(--green);font-size:1.1rem;"></i>
+              <div>
+                <div>សាច់ប្រាក់ Cash / Counter</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);font-weight:500;">Pay at counter or barista</div>
+              </div>
+            </div>
+            <input type="radio" name="payMethod" value="PAY_AT_PICKUP" style="accent-color:var(--accent);" />
+          </label>
+          <label class="pay-card" onclick="selectPayment('STRIPE', this)" th:if="${stripeEnabled}">
+            <div class="pay-card-left">
+              <i class="fa-brands fa-stripe" style="color:#635bff;font-size:1.25rem;"></i>
+              <div>
+                <div>Credit Card</div>
+                <div style="font-size:0.7rem;color:var(--text-muted);font-weight:500;">Visa / Mastercard</div>
+              </div>
+            </div>
+            <input type="radio" name="payMethod" value="STRIPE" style="accent-color:var(--accent);" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Checkout Action Button -->
+      <button type="button" class="btn-cta-gold" style="width:100%;margin-top:0.5rem;padding:0.95rem;" id="checkout-action-btn" onclick="submitOrder()">
+        <span>បញ្ជាទិញ Place Order • </span><span id="checkout-btn-total">$0.00</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ORDER TRACKER SHEET -->
+  <div class="sheet-backdrop" id="order-status-modal" onclick="closeSheetOnBackdrop(event, this)">
+    <div class="sheet-modal">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <div>
+          <h2 class="sheet-title" id="order-status-title">បានទទួលការកុម្ម៉ង់! 🎉</h2>
+          <div class="sheet-subtitle" id="order-status-ref">Order #...</div>
+        </div>
+        <button class="sheet-close-btn" onclick="closeModal('order-status-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Progress Stepper -->
+      <div class="tracker-stepper">
+        <div class="track-step done" id="step-1">
+          <div class="track-node"><i class="fa-solid fa-check"></i></div>
+          <span class="track-label">ទទួល</span>
+        </div>
+        <div class="track-step active" id="step-2">
+          <div class="track-node"><i class="fa-solid fa-fire-burner"></i></div>
+          <span class="track-label">ឆុងកាហ្វេ</span>
+        </div>
+        <div class="track-step" id="step-3">
+          <div class="track-node"><i class="fa-solid fa-mug-hot"></i></div>
+          <span class="track-label">រួចរាល់</span>
+        </div>
+        <div class="track-step" id="step-4">
+          <div class="track-node"><i class="fa-solid fa-circle-check"></i></div>
+          <span class="track-label">បានទទួល</span>
+        </div>
+      </div>
+
+      <!-- Bakong KHQR Container -->
+      <div id="khqr-box" style="display:none;background:#fff;border-radius:var(--radius-lg);padding:1.25rem;text-align:center;margin:0.75rem 0;">
+        <h3 style="color:#111;font-size:0.95rem;font-weight:800;margin-bottom:0.25rem;">ស្កេនទូទាត់ប្រាក់ Bakong KHQR</h3>
+        <p style="color:#666;font-size:0.75rem;">គាំទ្រ ABA, ACLEDA, Wing, Canadia គ្រប់ធនាគារ</p>
+        <img id="khqr-image" style="width:210px;height:210px;margin:0.75rem auto;display:block;border-radius:12px;border:1px solid #eee;" src="" alt="KHQR Payment" />
+        <div style="font-weight:800;font-size:1.25rem;color:#c48452;" id="khqr-amount">$0.00</div>
+        <button type="button" class="btn-cta-gold" style="width:100%;margin-top:0.85rem;background:#1a1613;" onclick="confirmDemoPayment()">
+          <i class="fa-solid fa-check-circle"></i> ខ្ញុំបានផ្ទេរប្រាក់រួចរាល់
+        </button>
+      </div>
+
+      <div class="bill-card" style="margin-top:0.75rem;">
+        <div class="bill-row"><span>រយៈពេលរៀបចំ Prep Time</span><span id="order-prep-time">~10 នាទី</span></div>
+        <div class="bill-row"><span>ប្រភេទកុម្ម៉ង់ Mode</span><span id="order-fulfillment-summary">Dine-in</span></div>
+        <div class="bill-row"><span>ស្ថានភាពទូទាត់ Payment</span><span id="order-payment-status" style="color:var(--accent-gold);font-weight:700;">PENDING</span></div>
+      </div>
+
+      <button type="button" class="btn-cta-gold" style="width:100%;margin-top:1.15rem;background:var(--bg-surface-elevated);border:1px solid var(--border-subtle);" onclick="closeModal('order-status-modal')">
+        កុម្ម៉ង់បន្ថែម Order More
+      </button>
+    </div>
+  </div>
+
+  <!-- ORDER HISTORY SHEET -->
+  <div class="sheet-backdrop" id="orders-history-modal" onclick="closeSheetOnBackdrop(event, this)">
+    <div class="sheet-modal">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <h2 class="sheet-title">ប្រវត្តិការកុម្ម៉ង់ Order History</h2>
+        <button class="sheet-close-btn" onclick="closeModal('orders-history-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="orders-history-list" style="display:flex;flex-direction:column;gap:0.65rem;max-height:48vh;overflow-y:auto;">
+        <div style="text-align:center;padding:2rem;color:var(--text-muted);font-size:0.85rem;">កំពុងទាញយកទិន្នន័យ...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO SHEET -->
+  <div class="sheet-backdrop" id="info-modal" onclick="closeSheetOnBackdrop(event, this)">
+    <div class="sheet-modal">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <h2 class="sheet-title">អំពី Lyhour Coffee</h2>
+        <button class="sheet-close-btn" onclick="closeModal('info-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="bill-card">
+        <div class="bill-row"><span>📍 អាសយដ្ឋាន</span><span style="color:#fff;">#390 ផ្លូវកាហ្វេ, ភ្នំពេញ</span></div>
+        <div class="bill-row"><span>⏰ ម៉ោងបើក</span><span style="color:#fff;">7:00 AM – 9:00 PM រៀងរាល់ថ្ងៃ</span></div>
+        <div class="bill-row"><span>📞 ទូរសព្ទ</span><span style="color:#fff;">+855 97 49 44 390</span></div>
+        <div class="bill-row"><span>📶 Guest Wi-Fi</span><span style="color:#fff;">LyhourCoffee / coffee2026</span></div>
+        <div class="bill-row"><span>🤖 Telegram Bot</span><span style="color:var(--accent-gold);">@LyhourCafe_bot</span></div>
+      </div>
+      <button type="button" class="btn-cta-gold" style="width:100%;margin-top:1.15rem;" onclick="closeModal('info-modal')">
+        បិទ Close
+      </button>
+    </div>
+  </div>
+
+  <!-- CAMERA SCANNER MODAL (Fallback for Browser & Direct Camera) -->
+  <div class="sheet-backdrop" id="qr-scanner-modal" onclick="closeSheetOnBackdrop(event, this)">
+    <div class="sheet-modal">
+      <div class="sheet-handle"></div>
+      <div class="sheet-head">
+        <div>
+          <h2 class="sheet-title">ស្កេន QR កូដលើតុ Scan Table</h2>
+          <div class="sheet-subtitle">តម្រង់កាមេរ៉ាទៅលើ QR កូដលើតុរបស់អ្នក</div>
+        </div>
+        <button class="sheet-close-btn" onclick="closeWebScanner()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="viewfinder" id="scanner-preview-container">
+        <video id="qr-video" autoplay playsinline muted></video>
+        <div class="laser-line"></div>
+      </div>
+
+      <!-- Direct Table Quick Chips -->
+      <div class="opt-group">
+        <div class="opt-title"><span>ជ្រើសរើសលេខតុដោយផ្ទាល់ Select Table</span></div>
+        <div class="opt-pills-row" style="justify-content:center;">
+          <button type="button" class="opt-choice" th:each="t : ${tables}" th:text="${t.tableNumber}" th:attr="onclick='manualSelectTable(\'' + ${t.tableNumber} + '\', ' + ${t.id} + ')'"></button>
+        </div>
+      </div>
+
+      <!-- Manual code input -->
+      <div style="display:flex;gap:0.45rem;margin-top:0.4rem;">
+        <input type="text" id="manual-qr-input" class="text-input-field" style="text-transform:uppercase;" placeholder="ឬវាយលេខតុ (ឧ. T1, T2)..." />
+        <button type="button" class="btn-cta-gold" style="flex:initial;padding:0 1.25rem;" onclick="submitManualTableCode()">យល់ព្រម</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="app-toast" class="app-toast">
+    <i class="fa-solid fa-circle-check" style="color:var(--green);"></i>
+    <span id="toast-text">Item added</span>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script th:inline="javascript">
+    /* State */
+    const tg = window.Telegram?.WebApp;
+    let currentUser = null;
+    let authToken = localStorage.getItem('tg_token') || null;
+    let cart = JSON.parse(localStorage.getItem('tg_cart') || '[]');
+    let currentFulfillment = 'DINE_IN';
+    let currentTableId = /*[[${selectedTable}]]*/ null;
+    let appliedDiscount = 0;
+    let appliedCoupon = null;
+
+    let activeCustomizerProduct = null;
+    let activeSize = 'Medium';
+    let activeSizeDelta = 0;
+    let activeSugar = '100%';
+    let activeIce = 'Normal Ice';
+    let activeQty = 1;
+
+    /* Initialize Telegram WebApp */
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (tg) {
+        tg.ready();
+        tg.expand();
+        try {
+          if (tg.setHeaderColor) tg.setHeaderColor('#0f0e0d');
+          if (tg.setBackgroundColor) tg.setBackgroundColor('#0f0e0d');
+        } catch (e) {}
+      } else {
+        const badge = document.getElementById('env-badge');
+        if (badge) badge.style.display = 'flex';
+      }
+
+      // Check URL query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const tableQ = urlParams.get('table');
+      if (tableQ) {
+        handleScannedTable(tableQ);
+      } else if (tg?.initDataUnsafe?.start_param) {
+        handleScannedTable(tg.initDataUnsafe.start_param);
+      }
+
+      // Sync initial fulfillment UI
+      setFulfillment('DINE_IN');
+
+      // Authenticate
+      await authenticateUser();
+
+      // Render cart
+      updateCartUI();
+
+      // Check orderSuccess param
+      const successOrderId = urlParams.get('orderSuccess');
+      if (successOrderId) {
+        loadAndShowOrderTracker(successOrderId);
+      }
+    });
+
+    /* Telegram Authentication */
+    async function authenticateUser() {
+      let initData = tg?.initData || '';
+      let tgUser = tg?.initDataUnsafe?.user || null;
+
+      let payload = {
+        initData: initData,
+        telegramUserId: tgUser ? tgUser.id : (currentUser?.id || 1001),
+        username: tgUser?.username || 'tg_customer',
+        firstName: tgUser?.first_name || 'Coffee Lover',
+        lastName: tgUser?.last_name || '',
+        photoUrl: tgUser?.photo_url || ''
+      };
+
+      try {
+        const res = await fetch('/api/v1/telegram/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          authToken = data.token;
+          localStorage.setItem('tg_token', authToken);
+          currentUser = data.user;
+          renderUserProfile(data.user);
+        } else {
+          renderFallbackUser(payload);
+        }
+      } catch (e) {
+        renderFallbackUser(payload);
+      }
+    }
+
+    function renderUserProfile(user) {
+      document.getElementById('user-display-name').textContent = user.firstName || user.username || 'Member';
+      document.getElementById('user-loyalty-tier').textContent = `⭐ ${user.loyaltyPoints || 20} pts`;
+      const avatar = document.getElementById('user-avatar');
+      if (user.photoUrl) {
+        avatar.innerHTML = `<img src="${user.photoUrl}" alt="User" />`;
+      } else {
+        avatar.textContent = (user.firstName || user.username || 'U').charAt(0).toUpperCase();
+      }
+    }
+
+    function renderFallbackUser(payload) {
+      document.getElementById('user-display-name').textContent = payload.firstName || 'Guest';
+      document.getElementById('user-loyalty-tier').textContent = '⭐ 20 pts';
+      document.getElementById('user-avatar').textContent = (payload.firstName || 'G').charAt(0);
+    }
+
+    /* Fulfillment switching (Pickup | Dine-in | Delivery) */
+    function setFulfillment(type) {
+      currentFulfillment = type;
+      document.querySelectorAll('.mode-pill').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === type);
+      });
+
+      const tableStrip = document.getElementById('table-strip');
+      const deliveryStrip = document.getElementById('delivery-strip');
+      const deliveryFeeLine = document.getElementById('delivery-fee-line');
+
+      if (tableStrip) tableStrip.style.display = type === 'DINE_IN' ? 'flex' : 'none';
+      if (deliveryStrip) deliveryStrip.style.display = type === 'DELIVERY' ? 'flex' : 'none';
+      if (deliveryFeeLine) deliveryFeeLine.style.display = type === 'DELIVERY' ? 'flex' : 'none';
+
+      const labelEl = document.getElementById('cart-fulfillment-label');
+      if (labelEl) {
+        labelEl.textContent = type === 'DINE_IN' ? '🪑 ញ៉ាំនៅហាង Dine-in' : (type === 'DELIVERY' ? '🛵 ដឹកជញ្ជូន Delivery' : '☕ ទិញខ្ចប់ Pickup');
+      }
+
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+      updateCartUI();
+    }
+
+    function onTableSelect(val) {
+      currentTableId = val;
+      const select = document.getElementById('selected-table-id');
+      const text = select.options[select.selectedIndex]?.text || '';
+      showToast(`បានជ្រើសរើស ${text.split(' ')[0]}`);
+    }
+
+    /* Search & Filter */
+    function filterMenu() {
+      const q = document.getElementById('menu-search').value.toLowerCase().trim();
+      document.querySelectorAll('.product-card').forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        const desc = card.dataset.desc.toLowerCase();
+        const match = !q || name.includes(q) || desc.includes(q);
+        card.style.display = match ? 'flex' : 'none';
+      });
+    }
+
+    function filterCategory(cat, btn) {
+      document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.querySelectorAll('.product-card').forEach(card => {
+        if (cat === 'ALL' || card.dataset.category.toUpperCase() === cat.toUpperCase()) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    }
+
+    /* Drink Customizer Modal */
+    function openCustomizerFromEl(el) {
+      activeCustomizerProduct = {
+        id: parseInt(el.dataset.id, 10),
+        name: el.dataset.name,
+        price: parseFloat(el.dataset.price),
+        img: el.dataset.img
+      };
+
+      document.getElementById('modal-product-name').textContent = activeCustomizerProduct.name;
+      document.getElementById('modal-item-note').value = '';
+      activeQty = 1;
+      document.getElementById('modal-qty').textContent = '1';
+
+      // Reset options
+      activeSize = 'Medium';
+      activeSizeDelta = 0;
+      document.querySelectorAll('#size-options .opt-choice').forEach(p => p.classList.toggle('active', p.dataset.size === 'Medium'));
+
+      activeSugar = '100%';
+      document.querySelectorAll('#sugar-options .opt-choice').forEach(p => p.classList.toggle('active', p.dataset.val === '100%'));
+
+      activeIce = 'Normal Ice';
+      document.querySelectorAll('#ice-options .opt-choice').forEach(p => p.classList.toggle('active', p.dataset.val === 'Normal Ice'));
+
+      updateCustomizerPrice();
+      openModal('customizer-modal');
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    }
+
+    function selectSize(btn) {
+      document.querySelectorAll('#size-options .opt-choice').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeSize = btn.dataset.size;
+      activeSizeDelta = parseFloat(btn.dataset.delta);
+      updateCustomizerPrice();
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    }
+
+    function selectOption(type, btn) {
+      const containerId = type === 'sugar' ? 'sugar-options' : 'ice-options';
+      document.querySelectorAll(`#${containerId} .opt-choice`).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (type === 'sugar') activeSugar = btn.dataset.val;
+      if (type === 'ice') activeIce = btn.dataset.val;
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    }
+
+    function changeCustomizerQty(delta) {
+      activeQty = Math.max(1, activeQty + delta);
+      document.getElementById('modal-qty').textContent = activeQty;
+      updateCustomizerPrice();
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    }
+
+    function updateCustomizerPrice() {
+      if (!activeCustomizerProduct) return;
+      const unitPrice = activeCustomizerProduct.price + activeSizeDelta;
+      const total = unitPrice * activeQty;
+      document.getElementById('modal-product-price').textContent = `$${unitPrice.toFixed(2)}`;
+      document.getElementById('modal-add-btn-text').textContent = `ដាក់ក្នុងកន្ត្រក Add to Bag • $${total.toFixed(2)}`;
+    }
+
+    function addConfiguredItemToCart() {
+      if (!activeCustomizerProduct) return;
+
+      const userNote = document.getElementById('modal-item-note').value.trim();
+      let fullNote = `${activeSugar} Sugar | ${activeIce}`;
+      if (userNote) fullNote += ` | ${userNote}`;
+
+      const unitPrice = activeCustomizerProduct.price + activeSizeDelta;
+
+      const existingIndex = cart.findIndex(item =>
+        item.productId === activeCustomizerProduct.id &&
+        item.size === activeSize &&
+        item.note === fullNote
+      );
+
+      if (existingIndex > -1) {
+        cart[existingIndex].quantity += activeQty;
+      } else {
+        cart.push({
+          productId: activeCustomizerProduct.id,
+          name: activeCustomizerProduct.name,
+          price: unitPrice,
+          imageUrl: activeCustomizerProduct.img,
+          size: activeSize,
+          note: fullNote,
+          quantity: activeQty
+        });
+      }
+
+      localStorage.setItem('tg_cart', JSON.stringify(cart));
+      closeModal('customizer-modal');
+      updateCartUI();
+      showToast(`${activeCustomizerProduct.name} បានបន្ថែម!`);
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    }
+
+    /* Cart UI & Management */
+    function updateCartUI() {
+      const totalCount = cart.reduce((s, i) => s + i.quantity, 0);
+      const subtotal = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+      const delivery = currentFulfillment === 'DELIVERY' ? 3.00 : 0;
+      const tax = (subtotal - appliedDiscount) > 0 ? (subtotal - appliedDiscount) * 0.10 : 0;
+      const grandTotal = Math.max(0, subtotal - appliedDiscount + tax + delivery);
+
+      // Update Floating Capsule
+      const capsule = document.getElementById('floating-cart');
+      if (capsule) {
+        if (totalCount > 0) {
+          capsule.classList.add('visible');
+          document.getElementById('capsule-count').textContent = `${totalCount} មុខ`;
+          document.getElementById('capsule-total').textContent = `$${grandTotal.toFixed(2)}`;
+        } else {
+          capsule.classList.remove('visible');
+        }
+      }
+
+      // Update Cart Sheet Numbers
+      document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+      document.getElementById('cart-tax').textContent = `$${tax.toFixed(2)}`;
+      document.getElementById('cart-total').textContent = `$${grandTotal.toFixed(2)}`;
+      document.getElementById('checkout-btn-total').textContent = `$${grandTotal.toFixed(2)}`;
+
+      // Render items
+      const listEl = document.getElementById('cart-items-list');
+      if (!listEl) return;
+
+      if (cart.length === 0) {
+        listEl.innerHTML = `<div style="text-align:center;padding:2rem 0;color:var(--text-muted);font-size:0.85rem;"><i class="fa-solid fa-basket-shopping" style="font-size:2rem;margin-bottom:0.5rem;display:block;opacity:0.4;"></i>កន្ត្រករបស់អ្នកទទេស្អាត<br>Your bag is empty</div>`;
+      } else {
+        listEl.innerHTML = cart.map((item, idx) => `
+          <div class="cart-row">
+            <div class="cart-row-left">
+              <div class="cart-row-title">${item.name} (${item.size})</div>
+              <div class="cart-row-meta">${item.note}</div>
+              <div class="cart-row-price">$${(item.price * item.quantity).toFixed(2)}</div>
+            </div>
+            <div class="qty-stepper">
+              <button type="button" class="btn-step" onclick="changeCartQty(${idx}, -1)" style="width:28px;height:28px;font-size:0.9rem;">−</button>
+              <span class="qty-display" style="width:26px;font-size:0.85rem;">${item.quantity}</span>
+              <button type="button" class="btn-step" onclick="changeCartQty(${idx}, 1)" style="width:28px;height:28px;font-size:0.9rem;">+</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function changeCartQty(idx, delta) {
+      if (!cart[idx]) return;
+      cart[idx].quantity += delta;
+      if (cart[idx].quantity <= 0) {
+        cart.splice(idx, 1);
+      }
+      localStorage.setItem('tg_cart', JSON.stringify(cart));
+      updateCartUI();
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    }
+
+    function openCart() {
+      updateCartUI();
+      openModal('cart-modal');
+    }
+
+    function applyPromo() {
+      const code = document.getElementById('promo-input').value.trim().toUpperCase();
+      const subtotal = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+      if (code === 'WELCOME10') {
+        appliedDiscount = subtotal * 0.10;
+        appliedCoupon = 'WELCOME10';
+        document.getElementById('discount-line').style.display = 'flex';
+        document.getElementById('cart-discount').textContent = `-$${appliedDiscount.toFixed(2)}`;
+        showToast("បានបញ្ចុះតម្លៃ 10% (Promo 10% applied)");
+      } else {
+        appliedDiscount = 0;
+        appliedCoupon = null;
+        document.getElementById('discount-line').style.display = 'none';
+        showToast("កូដមិនត្រឹមត្រូវ (Invalid code)");
+      }
+      updateCartUI();
+    }
+
+    let selectedPayment = 'BAKONG';
+    function selectPayment(method, el) {
+      selectedPayment = method;
+      document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      const radio = el.querySelector('input[type="radio"]');
+      if (radio) radio.checked = true;
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    }
+
+    /* Submit Order */
+    async function submitOrder() {
+      if (cart.length === 0) {
+        showToast("សូមជ្រើសរើសភេសជ្ជៈសិន (Cart is empty)");
+        return;
+      }
+
+      if (currentFulfillment === 'DINE_IN') {
+        const tableSelect = document.getElementById('selected-table-id');
+        if (tableSelect && tableSelect.value) {
+          currentTableId = tableSelect.value;
+        }
+      }
+
+      const checkoutBtn = document.getElementById('checkout-action-btn');
+      checkoutBtn.disabled = true;
+      checkoutBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> កំពុងដំណើរការ...`;
+
+      const tgChatId = tg?.initDataUnsafe?.user?.id || (currentUser?.telegramUserId || null);
+
+      const payload = {
+        items: cart.map(i => ({
+          productId: i.productId,
+          quantity: i.quantity,
+          size: i.size,
+          note: i.note,
+          price: i.price
+        })),
+        paymentMethod: selectedPayment,
+        fulfillmentType: currentFulfillment,
+        tableId: currentFulfillment === 'DINE_IN' ? currentTableId : null,
+        deliveryAddress: currentFulfillment === 'DELIVERY' ? document.getElementById('delivery-address-input').value : null,
+        telegramChatId: tgChatId,
+        couponCode: appliedCoupon
+      };
+
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+
+        const res = await fetch('/api/v1/telegram/order', {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          // Clear cart
+          cart = [];
+          localStorage.removeItem('tg_cart');
+          updateCartUI();
+          closeModal('cart-modal');
+
+          showToast("ការកុម្ម៉ង់បានជោគជ័យ! 🎉");
+          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+
+          showOrderTracker(data);
+        } else {
+          showToast(data.message || "មានបញ្ហាពេលកុម្ម៉ង់ (Order failed)");
+          if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+        }
+      } catch (err) {
+        showToast("ការតភ្ជាប់មានបញ្ហា (Connection error)");
+      } finally {
+        checkoutBtn.disabled = false;
+        updateCartUI();
+      }
+    }
+
+    /* Live Order Tracker Modal */
+    function showOrderTracker(order) {
+      document.getElementById('order-status-ref').textContent = `Order #${order.orderId || order.id}`;
+      document.getElementById('order-prep-time').textContent = `~${order.estimatedPrepMinutes || 10} នាទី`;
+      document.getElementById('order-fulfillment-summary').textContent = order.fulfillmentType || currentFulfillment;
+      document.getElementById('order-payment-status').textContent = order.paymentStatus || 'PENDING';
+
+      const khqrBox = document.getElementById('khqr-box');
+      if (order.qrCodeUrl) {
+        document.getElementById('khqr-image').src = order.qrCodeUrl;
+        document.getElementById('khqr-amount').textContent = `$${parseFloat(order.totalPrice).toFixed(2)}`;
+        khqrBox.style.display = 'block';
+      } else {
+        khqrBox.style.display = 'none';
+      }
+
+      openModal('order-status-modal');
+    }
+
+    async function loadAndShowOrderTracker(orderId) {
+      try {
+        const res = await fetch(`/api/v1/telegram/order/${orderId}`);
+        if (res.ok) {
+          const order = await res.json();
+          showOrderTracker(order);
+        }
+      } catch (e) {}
+    }
+
+    function confirmDemoPayment() {
+      document.getElementById('order-payment-status').textContent = 'PAID (Demo)';
+      document.getElementById('order-payment-status').style.color = 'var(--green)';
+      document.getElementById('khqr-box').style.display = 'none';
+      showToast("ការទូទាត់ត្រូវបានបញ្ជាក់! Payment confirmed.");
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    }
+
+    /* Order History Modal */
+    async function showMyOrders() {
+      openModal('orders-history-modal');
+      const container = document.getElementById('orders-history-list');
+      const tgChatId = tg?.initDataUnsafe?.user?.id || (currentUser?.telegramUserId || null);
+
+      try {
+        const headers = {};
+        if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+        const res = await fetch(`/api/v1/telegram/my-orders?telegramChatId=${tgChatId || ''}`, { headers });
+        if (res.ok) {
+          const orders = await res.json();
+          if (orders.length === 0) {
+            container.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--text-muted);font-size:0.85rem;">មិនទាន់មានការកុម្ម៉ង់នៅឡើយទេ<br>No orders yet</div>`;
+            return;
+          }
+          container.innerHTML = orders.map(o => `
+            <div class="cart-row">
+              <div class="cart-row-left">
+                <div class="cart-row-title">Order #${o.id} · <span style="color:var(--accent-gold);">${o.status}</span></div>
+                <div class="cart-row-meta">${o.items ? o.items.map(i => i.productName + ' x' + i.quantity).join(', ') : 'Coffee items'}</div>
+                <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">${o.paymentMethod} · ${o.paymentStatus}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-weight:800;font-size:0.95rem;color:var(--accent-gold);">$${parseFloat(o.totalPrice).toFixed(2)}</div>
+                <button type="button" class="btn-mini-scan" style="margin-top:4px;" onclick="loadAndShowOrderTracker(${o.id})">តាមដាន Track</button>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        container.innerHTML = `<div style="text-align:center;padding:1.5rem;color:var(--text-muted);">Failed to load history</div>`;
+      }
+    }
+
+    /* Scan Table QR Code Functions */
+    let cameraStream = null;
+
+    function startScanTable() {
+      if (tg && typeof tg.showScanQrPopup === 'function') {
+        tg.showScanQrPopup({ text: "ស្កេន QR កូដលើតុ ☕ Scan Table QR" }, function(qrText) {
+          if (!qrText) return false;
+          const ok = handleScannedTable(qrText);
+          if (ok && tg.closeScanQrPopup) {
+            tg.closeScanQrPopup();
+          }
+          return true;
+        });
+      } else {
+        openWebScanner();
+      }
+    }
+
+    function handleScannedTable(rawText) {
+      if (!rawText) return false;
+      rawText = rawText.trim();
+
+      let tableCode = null;
+      const matchStartParam = rawText.match(/table[_-]?([a-zA-Z0-9]+)/i);
+      const matchUrlParam = rawText.match(/[?&]table=([a-zA-Z0-9]+)/i);
+      const matchQrPath = rawText.match(/\/qr\/([a-zA-Z0-9\-]+)/i);
+      const matchDirect = rawText.match(/^(T\d+|\d+)$/i);
+
+      if (matchStartParam) {
+        tableCode = matchStartParam[1];
+      } else if (matchUrlParam) {
+        tableCode = matchUrlParam[1];
+      } else if (matchQrPath) {
+        tableCode = matchQrPath[1].split('-')[0];
+      } else if (matchDirect) {
+        tableCode = matchDirect[1];
+      } else {
+        tableCode = rawText;
+      }
+
+      if (tableCode) {
+        if (/^\d+$/.test(tableCode)) {
+          tableCode = 'T' + tableCode;
+        }
+        tableCode = tableCode.toUpperCase();
+
+        const select = document.getElementById('selected-table-id');
+        if (select) {
+          for (let opt of select.options) {
+            if (opt.text.toUpperCase().includes(tableCode) || opt.value == tableCode) {
+              opt.selected = true;
+              currentTableId = opt.value;
+              break;
+            }
+          }
+        }
+
+        setFulfillment('DINE_IN');
+
+        const badge = document.getElementById('table-display-badge');
+        if (badge) {
+          badge.innerHTML = `<i class="fa-solid fa-chair"></i> <span style="color:var(--accent-gold);font-weight:800;">តុ ${tableCode}</span>`;
+        }
+
+        showToast(`បានកំណត់តុ ${tableCode} រួចរាល់!`);
+        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        return true;
+      }
+
+      showToast("មិនស្គាល់លេខតុ (Invalid QR)");
+      return false;
+    }
+
+    async function openWebScanner() {
+      openModal('qr-scanner-modal');
+      startCamera();
+    }
+
+    function closeWebScanner() {
+      stopCamera();
+      closeModal('qr-scanner-modal');
+    }
+
+    async function startCamera() {
+      const video = document.getElementById('qr-video');
+      if (!video) return;
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' }
+        });
+        video.srcObject = cameraStream;
+        video.play();
+
+        if ('BarcodeDetector' in window) {
+          const barcodeDetector = new BarcodeDetector({ formats: ['qr_code'] });
+          const scanInterval = setInterval(async () => {
+            if (!cameraStream) {
+              clearInterval(scanInterval);
+              return;
+            }
+            try {
+              const barcodes = await barcodeDetector.detect(video);
+              if (barcodes.length > 0) {
+                clearInterval(scanInterval);
+                closeWebScanner();
+                handleScannedTable(barcodes[0].rawValue);
+              }
+            } catch (e) {}
+          }, 350);
+        }
+      } catch (err) {
+        console.log("Camera access not available or denied:", err.message);
+      }
+    }
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+    }
+
+    function manualSelectTable(tableNum, tableId) {
+      closeWebScanner();
+      handleScannedTable(tableNum);
+    }
+
+    function submitManualTableCode() {
+      const val = document.getElementById('manual-qr-input').value.trim();
+      if (!val) {
+        showToast("សូមបញ្ចូលលេខតុ (Enter table)");
+        return;
+      }
+      closeWebScanner();
+      handleScannedTable(val);
+    }
+
+    /* Modal Sheet Helpers */
+    function openModal(id) {
+      const sheet = document.getElementById(id);
+      if (sheet) {
+        sheet.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(id) {
+      const sheet = document.getElementById(id);
+      if (sheet) {
+        sheet.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function closeSheetOnBackdrop(event, sheet) {
+      if (event.target === sheet) {
+        sheet.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function showMenuTab() {
+      document.querySelectorAll('.sheet-backdrop').forEach(m => m.classList.remove('open'));
+      document.body.style.overflow = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showInfoModal() {
+      openModal('info-modal');
+    }
+
+    /* Toast */
+    function showToast(text) {
+      const toast = document.getElementById('app-toast');
+      document.getElementById('toast-text').textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+  </script>
+</body>
+</html>

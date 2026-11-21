@@ -155,10 +155,13 @@ public class OrderService {
             orderItem.setQuantity(itemDto.getQuantity());
             orderItem.setSize(itemDto.getSize());
             orderItem.setNote(itemDto.getNote());
-            orderItem.setPriceAtTimeOfOrder(itemDto.getPrice());
+            BigDecimal unitPrice = itemDto.getPrice() != null
+                    ? itemDto.getPrice()
+                    : BigDecimal.valueOf(product.getPrice());
+            orderItem.setPriceAtTimeOfOrder(unitPrice);
 
             order.getOrderItems().add(orderItem);
-            subtotal = subtotal.add(itemDto.getPrice().multiply(new BigDecimal(itemDto.getQuantity())));
+            subtotal = subtotal.add(unitPrice.multiply(new BigDecimal(itemDto.getQuantity())));
             prepMinutes += recipeRepository.findByProductId(product.getId())
                     .map(r -> r.getPrepMinutes()).orElse(5) * itemDto.getQuantity();
         }
@@ -241,6 +244,11 @@ public class OrderService {
         auditLogService.log("ORDER_STATUS", "Order #" + orderId + " → " + status);
         notificationService.notifyCustomerOrderStatus(saved);
         return saved;
+    }
+
+    @Transactional
+    public Order save(Order order) {
+        return orderRepository.save(order);
     }
 
     @Transactional(readOnly = true)

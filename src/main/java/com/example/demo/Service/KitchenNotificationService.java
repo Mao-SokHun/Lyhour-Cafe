@@ -3,16 +3,18 @@ package com.example.demo.Service;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class KitchenNotificationService {
 
-    private final SimpMessagingTemplate messagingTemplate;
+    private final Optional<SimpMessagingTemplate> messagingTemplate;
 
-    public KitchenNotificationService(SimpMessagingTemplate messagingTemplate) {
+    public KitchenNotificationService(Optional<SimpMessagingTemplate> messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
 
     public void notifyNewOrder(Long orderId) {
-        messagingTemplate.convertAndSend("/topic/kitchen/orders", orderId);
+        messagingTemplate.ifPresent(template -> template.convertAndSend("/topic/kitchen/orders", orderId));
     }
 }

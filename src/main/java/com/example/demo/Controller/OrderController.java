@@ -40,7 +40,13 @@ public class OrderController {
             HttpSession session) {
 
         if (customer == null) {
-            if (request.getTableId() != null) {
+            if (request.getSource() == com.example.demo.Models.OrderSource.TELEGRAM
+                    || request.getTelegramChatId() != null) {
+                User walkin = userRepository.findByUsername("walkin");
+                if (walkin != null) {
+                    customer = walkin;
+                }
+            } else if (request.getTableId() != null) {
                 User walkin = userRepository.findByUsername("walkin");
                 if (walkin == null) {
                     return ResponseEntity.badRequest().body(Map.of("message", "Guest ordering unavailable"));

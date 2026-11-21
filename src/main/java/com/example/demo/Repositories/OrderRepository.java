@@ -16,6 +16,10 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByCustomerOrderByOrderDateDesc(User customer);
 
+    List<Order> findByTelegramChatIdOrderByOrderDateDesc(Long telegramChatId);
+
+    List<Order> findBySourceOrderByOrderDateDesc(com.example.demo.Models.OrderSource source);
+
     Optional<Order> findByPaymentReference(String paymentReference);
 
     long countByStatus(OrderStatus status);

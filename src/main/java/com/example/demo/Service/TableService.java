@@ -81,8 +81,17 @@ public class TableService {
     }
 
     public CafeTable findByQrCode(String qrCode) {
-        return cafeTableRepository.findByQrCode(qrCode)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid table QR code"));
+        if (qrCode == null || qrCode.isBlank()) {
+            throw new IllegalArgumentException("Invalid table QR code");
+        }
+        String clean = qrCode.trim().toUpperCase();
+        return cafeTableRepository.findByQrCode(clean)
+                .or(() -> cafeTableRepository.findByTableNumber(clean))
+                .or(() -> {
+                    String num = clean.replaceAll("\\D", "");
+                    return num.isEmpty() ? java.util.Optional.empty() : cafeTableRepository.findByTableNumber("T" + num);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Invalid table QR code: " + qrCode));
     }
 
     @Transactional

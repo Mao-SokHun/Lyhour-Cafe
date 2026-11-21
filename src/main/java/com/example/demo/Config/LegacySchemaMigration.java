@@ -32,11 +32,23 @@ public class LegacySchemaMigration implements ApplicationRunner {
         addColumnIfMissing("orders", "payment_method", "VARCHAR(50) DEFAULT 'PAY_AT_PICKUP'");
         addColumnIfMissing("orders", "payment_reference", "VARCHAR(255)");
         addColumnIfMissing("orders", "branch_id", "BIGINT");
+        addColumnIfMissing("orders", "telegram_chat_id", "BIGINT");
+        addColumnIfMissing("users", "telegram_user_id", "BIGINT");
+        addColumnIfMissing("users", "telegram_username", "VARCHAR(255)");
 
-        jdbcTemplate.update("UPDATE products SET stock = 100 WHERE stock IS NULL");
-        jdbcTemplate.update("UPDATE orders SET source = 'ONLINE' WHERE source IS NULL");
-        jdbcTemplate.update("UPDATE orders SET payment_status = 'PENDING' WHERE payment_status IS NULL");
-        jdbcTemplate.update("UPDATE orders SET payment_method = 'PAY_AT_PICKUP' WHERE payment_method IS NULL");
+        safeUpdate("UPDATE products SET stock = 100 WHERE stock IS NULL");
+        safeUpdate("UPDATE orders SET source = 'ONLINE' WHERE source IS NULL");
+        safeUpdate("UPDATE orders SET payment_status = 'PENDING' WHERE payment_status IS NULL");
+        safeUpdate("UPDATE orders SET payment_method = 'PAY_AT_PICKUP' WHERE payment_method IS NULL");
+        safeUpdate("UPDATE cafe_tables SET qr_code = table_number || '-LYHOUR' WHERE qr_code IS NULL");
+    }
+
+    private void safeUpdate(String sql) {
+        try {
+            jdbcTemplate.update(sql);
+        } catch (Exception ignored) {
+            // Table doesn't exist yet or already up to date
+        }
     }
 
     private void addColumnIfMissing(String table, String column, String definition) {
