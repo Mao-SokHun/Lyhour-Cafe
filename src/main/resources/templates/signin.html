@@ -1,61 +1,411 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head}"></head>
-<body class="auth-page">
-  <div class="auth-shell">
-    <div class="auth-brand" style="background:linear-gradient(135deg, #1b1612, #342318);color:#fff;padding:2.5rem 2rem;display:flex;flex-direction:column;justify-content:center;">
-      <span class="logo-mark" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#c67b4a,#7d4422);display:grid;place-items:center;font-size:1.5rem;margin-bottom:1.25rem;color:#fff;">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff Sign In · Lyhour Coffee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --espresso:   #0F0E0D;
+      --roast:      #1C1917;
+      --surface:    #242220;
+      --card:       #2D2A27;
+      --border:     rgba(255,255,255,0.08);
+      --gold:       #D49A6A;
+      --gold-light: #E8BB8A;
+      --gold-dim:   rgba(212,154,106,0.15);
+      --text:       #F5EDE4;
+      --muted:      #9C8F85;
+      --danger-bg:  rgba(239,68,68,0.12);
+      --danger:     #FCA5A5;
+      --success-bg: rgba(16,185,129,0.12);
+      --success:    #6EE7B7;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--espresso);
+      color: var(--text);
+    }
+
+    /* Ambient background */
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 1.5rem;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 10%, rgba(212,154,106,0.08), transparent),
+        radial-gradient(ellipse 50% 60% at 80% 90%, rgba(130,70,30,0.10), transparent),
+        var(--espresso);
+    }
+
+    /* Card */
+    .signin-card {
+      width: min(420px, 100%);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      box-shadow:
+        0 0 0 1px rgba(212,154,106,0.06),
+        0 24px 60px rgba(0,0,0,0.6),
+        0 4px 16px rgba(0,0,0,0.4);
+      animation: fadeUp 0.45s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Logo */
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 1.75rem;
+    }
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #C67B4A, #7D4422);
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(198,123,74,0.35);
+    }
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .logo-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .logo-sub {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.1rem;
+    }
+
+    /* Heading */
+    .card-title {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.025em;
+      margin-bottom: 0.3rem;
+    }
+    .card-subtitle {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1.75rem;
+      line-height: 1.5;
+    }
+
+    /* Alert badges */
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      margin-bottom: 1.25rem;
+      line-height: 1.4;
+    }
+    .alert-error {
+      background: var(--danger-bg);
+      border: 1px solid rgba(239,68,68,0.25);
+      color: var(--danger);
+    }
+    .alert-success {
+      background: var(--success-bg);
+      border: 1px solid rgba(16,185,129,0.25);
+      color: var(--success);
+    }
+    .alert i { margin-top: 0.1rem; flex-shrink: 0; }
+
+    /* Form */
+    .form-group { margin-bottom: 1rem; }
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+    .input-wrap {
+      position: relative;
+    }
+    .input-icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.88rem;
+      pointer-events: none;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.78rem 0.9rem 0.78rem 2.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .form-input::placeholder { color: rgba(156,143,133,0.5); }
+    .form-input:focus {
+      border-color: rgba(212,154,106,0.5);
+      box-shadow: 0 0 0 3px rgba(212,154,106,0.12);
+    }
+
+    /* Toggle password */
+    .input-toggle {
+      position: absolute;
+      right: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.88rem;
+      padding: 0.25rem;
+      transition: color 0.2s;
+    }
+    .input-toggle:hover { color: var(--gold); }
+
+    /* Submit button */
+    .btn-signin {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: linear-gradient(135deg, #C67B4A, #A85E30);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      letter-spacing: 0.01em;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(198,123,74,0.3);
+    }
+    .btn-signin:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(198,123,74,0.4);
+    }
+    .btn-signin:active { transform: translateY(0); }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider span {
+      font-size: 0.75rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* Footer row */
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .footer-hint code {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0.1em 0.4em;
+      font-size: 0.75rem;
+      color: var(--gold);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gold);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--gold-light); }
+
+    /* Guest notice badge */
+    .guest-notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      background: var(--gold-dim);
+      border: 1px solid rgba(212,154,106,0.2);
+      border-radius: 12px;
+      padding: 0.85rem 0.95rem;
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.5;
+      margin-top: 1.5rem;
+    }
+    .guest-notice i { color: var(--gold); margin-top: 0.1rem; flex-shrink: 0; }
+    .guest-notice a {
+      color: var(--gold);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .guest-notice a:hover { color: var(--gold-light); text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="signin-card">
+
+    <!-- Logo -->
+    <div class="logo-wrap">
+      <div class="logo-icon">
         <i class="fa-solid fa-mug-hot"></i>
+      </div>
+      <div class="logo-text">
+        <span class="logo-name">Lyhour Coffee</span>
+        <span class="logo-sub">Staff Portal</span>
+      </div>
+    </div>
+
+    <!-- Heading -->
+    <h1 class="card-title">Staff Sign In</h1>
+    <p class="card-subtitle">Access POS, Kitchen &amp; Store Management Dashboard.</p>
+
+    <!-- Error / Success alerts -->
+    <div th:if="${param.error}" class="alert alert-error">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span>Invalid username or password. Please try again.</span>
+    </div>
+    <div th:if="${param.logout}" class="alert alert-success">
+      <i class="fa-solid fa-check-circle"></i>
+      <span>You have been signed out successfully.</span>
+    </div>
+
+    <!-- Sign-in form -->
+    <form method="post" th:action="@{/signin}" autocomplete="on">
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-user input-icon"></i>
+          <input
+            class="form-input"
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your staff username"
+            autocomplete="username"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-lock input-icon"></i>
+          <input
+            class="form-input"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          />
+          <button type="button" class="input-toggle" onclick="togglePwd()" aria-label="Toggle password">
+            <i class="fa-solid fa-eye" id="pwd-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-signin">
+        <i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard
+      </button>
+    </form>
+
+    <div class="divider"><span>or</span></div>
+
+    <div class="card-footer">
+      <span class="footer-hint">Demo: <code>admin</code> / <code>admin123</code></span>
+      <a href="/home" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to Menu
+      </a>
+    </div>
+
+    <!-- Customer notice -->
+    <div class="guest-notice">
+      <i class="fa-solid fa-circle-info"></i>
+      <span>
+        Customers <strong>do not need to sign in</strong> to order.
+        &nbsp;<a href="/home">Browse &amp; Order as Guest →</a>
       </span>
-      <h1 style="font-size:1.85rem;font-weight:700;margin-bottom:0.5rem;color:#fff;">Lyhour Coffee</h1>
-      <p style="color:#d8c8bb;font-size:0.95rem;line-height:1.5;margin-bottom:1.5rem;">
-        Staff &amp; Admin Dashboard Portal.
-      </p>
-      
-      <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:1rem;font-size:0.85rem;color:#f0e2d8;">
-        <div style="font-weight:700;margin-bottom:0.35rem;color:#e8af7e;"><i class="fa-solid fa-circle-info"></i> Customer Notice:</div>
-        <div>Customers <b>do not</b> need to register or sign in to order! You can order directly as a guest.</div>
-        <a href="/home" class="btn btn-sm btn-primary mt-2" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8rem;padding:0.45rem 0.85rem;">
-          <i class="fa-solid fa-arrow-left"></i> Return to Shop Menu
-        </a>
-      </div>
     </div>
 
-    <div class="auth-form" style="padding:2.5rem 2rem;">
-      <h2 style="font-size:1.6rem;font-weight:700;margin-bottom:0.25rem;">Staff Sign In</h2>
-      <p class="subtitle" style="color:var(--text-muted);font-size:0.88rem;margin-bottom:1.5rem;">
-        Sign in to access POS, Kitchen &amp; Store Management.
-      </p>
-
-      <div th:if="${param.error}" style="background:#fde8e8;border:1px solid #f8b4b4;color:#9b1c1c;padding:0.65rem 0.9rem;border-radius:10px;font-size:0.85rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
-        <i class="fa-solid fa-circle-exclamation"></i>
-        <span>Invalid username or password. Please try again.</span>
-      </div>
-
-      <div th:if="${param.logout}" style="background:#def7ec;border:1px solid #bcf0da;color:#03543f;padding:0.65rem 0.9rem;border-radius:10px;font-size:0.85rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
-        <i class="fa-solid fa-check"></i>
-        <span>You have been signed out successfully.</span>
-      </div>
-
-      <form method="post" th:action="@{/signin}">
-        <div class="form-group" style="margin-bottom:1rem;">
-          <label for="username" style="font-weight:600;font-size:0.85rem;margin-bottom:0.35rem;display:block;">Staff Username</label>
-          <input class="input" type="text" id="username" name="username" placeholder="e.g. admin or cashier" required style="width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid var(--border);">
-        </div>
-        <div class="form-group" style="margin-bottom:1.25rem;">
-          <label for="password" style="font-weight:600;font-size:0.85rem;margin-bottom:0.35rem;display:block;">Password</label>
-          <input class="input" type="password" id="password" name="password" placeholder="••••••••" required style="width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid var(--border);">
-        </div>
-        <button type="submit" class="btn btn-primary btn-block" style="width:100%;padding:0.75rem;font-weight:700;border-radius:10px;">
-          <i class="fa-solid fa-lock-open" style="margin-right:0.4rem;"></i> Sign In to Dashboard
-        </button>
-      </form>
-
-      <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;color:var(--text-muted);">
-        <span>Demo: <code>admin</code> / <code>admin123</code></span>
-        <a href="/home" style="color:var(--accent);font-weight:600;"><i class="fa-solid fa-mug-saucer"></i> Order Coffee</a>
-      </div>
-    </div>
   </div>
+
+  <script>
+    function togglePwd() {
+      const input = document.getElementById('password');
+      const eye   = document.getElementById('pwd-eye');
+      if (input.type === 'password') {
+        input.type = 'text';
+        eye.className = 'fa-solid fa-eye-slash';
+      } else {
+        input.type = 'password';
+        eye.className = 'fa-solid fa-eye';
+      }
+    }
+  </script>
 </body>
 </html>
