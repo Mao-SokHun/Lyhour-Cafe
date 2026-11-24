@@ -2,90 +2,143 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head}"></head>
 <body>
-  <div th:replace="~{fragments/order-header :: order-header}"></div>
+  <div th:replace="~{fragments/guest-header :: guest-header}"></div>
 
   <main class="page">
     <div class="container">
-      <nav class="breadcrumb">
-        <a href="/index">Home</a> <span>/</span> <span>Cart</span>
+      <nav class="breadcrumb" style="display:flex;align-items:center;gap:0.4rem;font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem;">
+        <a href="/home" style="color:var(--accent);font-weight:600;">Home</a> <span>/</span> <span>Your Bag</span>
       </nav>
-      <h1 class="page-title">Your bag</h1>
-      <p class="page-subtitle">Adjust sizes and notes before checkout.</p>
-
-      <div id="qr-table-banner" class="card mb-2 hidden" style="padding:1rem;background:var(--surface-2);">
-        <strong><i class="fa-solid fa-chair"></i> Table <span id="qr-table-label"></span></strong>
-        <p class="text-muted mt-1" style="font-size:0.88rem;margin-bottom:0;">Dine-in QR order — sent to kitchen first, pay at table or pay online below.</p>
-        <div class="form-group mt-2" style="margin-bottom:0;">
-          <label>Your name (optional)</label>
-          <input type="text" id="guest-name" class="input" placeholder="e.g. Sokha">
+      
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+        <div>
+          <h1 class="page-title" style="margin:0;font-size:1.85rem;">Your Order Bag</h1>
+          <p class="page-subtitle" style="margin:0.25rem 0 0;font-size:0.9rem;color:var(--text-muted);">
+            No registration needed — order as guest directly!
+          </p>
         </div>
+        <a href="/home#product-menu" class="btn btn-outline btn-sm" style="font-size:0.85rem;">
+          <i class="fa-solid fa-plus"></i> Add More
+        </a>
+      </div>
+
+      <!-- Dine-in QR Table Banner if scanned -->
+      <div id="qr-table-banner" class="card mb-3 hidden" style="padding:1rem 1.25rem;background:linear-gradient(135deg,rgba(198,123,74,0.12),rgba(198,123,74,0.04));border:1px solid var(--accent);border-radius:14px;">
+        <strong style="color:var(--accent);font-size:1rem;"><i class="fa-solid fa-chair"></i> Dine-in: Table <span id="qr-table-label"></span> Active</strong>
+        <p class="text-muted mt-1" style="font-size:0.85rem;margin:0.25rem 0 0;">Your order will be sent to the barista/kitchen and served to your table.</p>
       </div>
 
       <div id="cart-view" class="cart-layout">
-        <div id="cart-items" class="flex" style="flex-direction:column;gap:1rem;"></div>
-        <aside class="card summary-card">
-          <h3>Summary</h3>
-          <div class="mt-2" style="display:grid;gap:0.5rem;">
+        <div id="cart-items" class="flex" style="flex-direction:column;gap:0.85rem;"></div>
+
+        <aside class="card summary-card" style="border-radius:18px;padding:1.5rem;box-shadow:var(--shadow-sm);background:var(--surface);">
+          <h3 style="font-size:1.2rem;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);">
+            Order Summary
+          </h3>
+
+          <div style="display:grid;gap:0.45rem;font-size:0.9rem;">
             <div class="flex justify-between"><span>Items</span><span id="total-items">0</span></div>
             <div class="flex justify-between"><span>Subtotal</span><span id="subtotal-price">$0.00</span></div>
             <div class="flex justify-between text-muted"><span>Tax (10%)</span><span id="tax-price">$0.00</span></div>
-            <div class="flex justify-between text-muted hidden" id="discount-row"><span>Discount</span><span id="discount-price">-$0.00</span></div>
-            <div class="flex justify-between text-muted"><span>Pickup</span><span>Free</span></div>
+            <div class="flex justify-between text-muted hidden" id="discount-row" style="color:var(--success);">
+              <span>Discount</span><span id="discount-price">-$0.00</span>
+            </div>
+            <div class="flex justify-between text-muted" id="delivery-fee-row" style="display:none;">
+              <span>Delivery Fee</span><span>$3.00</span>
+            </div>
             <hr style="border:none;border-top:1px solid var(--border);margin:0.5rem 0;">
-            <div class="flex justify-between" style="font-weight:700;font-size:1.1rem;">
-              <span>Total</span><span id="total-price">$0.00</span>
+            <div class="flex justify-between" style="font-weight:700;font-size:1.2rem;color:var(--text);">
+              <span>Total Amount</span><span id="total-price" style="color:var(--accent);">$0.00</span>
             </div>
           </div>
-          <div class="form-group mt-3" style="margin-bottom:0;">
-            <label>Fulfillment</label>
-            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;">
-              <input type="radio" name="fulfillmentType" value="PICKUP" checked> Pickup
+
+          <!-- Customer details (No login required) -->
+          <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);">
+            <label style="font-size:0.82rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:0.45rem;">
+              Guest Contact Details
             </label>
-            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;">
-              <input type="radio" name="fulfillmentType" value="DELIVERY"> Delivery (+$3)
-            </label>
-            <label class="flex items-center gap-sm mt-1 hidden" style="font-size:0.88rem;" id="dine-in-option">
-              <input type="radio" name="fulfillmentType" value="DINE_IN"> Dine-in (table)
-            </label>
+            <div class="form-group" style="margin-bottom:0.5rem;">
+              <input type="text" id="guest-name" class="input" placeholder="Your name (e.g. Sokha)" style="border-radius:10px;padding:0.6rem 0.85rem;font-size:0.88rem;">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <input type="tel" id="guest-phone" class="input" placeholder="Phone number (optional)" style="border-radius:10px;padding:0.6rem 0.85rem;font-size:0.88rem;">
+            </div>
           </div>
-          <div class="form-group mt-2 hidden" id="delivery-address-group" style="margin-bottom:0;">
-            <label>Delivery address</label>
-            <input type="text" id="delivery-address" class="input" placeholder="Street, city…">
+
+          <!-- Fulfillment -->
+          <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);">
+            <label style="font-size:0.82rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:0.45rem;">
+              Order Type
+            </label>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+              <label class="flex items-center gap-sm" style="font-size:0.88rem;cursor:pointer;">
+                <input type="radio" name="fulfillmentType" value="PICKUP" checked> Store Pickup
+              </label>
+              <label class="flex items-center gap-sm" style="font-size:0.88rem;cursor:pointer;">
+                <input type="radio" name="fulfillmentType" value="DELIVERY"> Delivery (+$3)
+              </label>
+              <label class="flex items-center gap-sm hidden" style="font-size:0.88rem;cursor:pointer;" id="dine-in-option">
+                <input type="radio" name="fulfillmentType" value="DINE_IN"> Dine-in (Table)
+              </label>
+            </div>
+            <div class="form-group mt-2 hidden" id="delivery-address-group" style="margin-bottom:0;">
+              <input type="text" id="delivery-address" class="input" placeholder="Delivery address, house #, street..." style="border-radius:10px;padding:0.6rem 0.85rem;font-size:0.88rem;">
+            </div>
           </div>
-          <div class="form-group mt-3" style="margin-bottom:0;">
-            <label>Promo code</label>
-            <input type="text" id="coupon-code" class="input" placeholder="e.g. WELCOME10" style="text-transform:uppercase;">
+
+          <!-- Promo Code -->
+          <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);">
+            <label style="font-size:0.82rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:0.45rem;">
+              Promo Code
+            </label>
+            <div style="display:flex;gap:0.45rem;">
+              <input type="text" id="coupon-code" class="input" placeholder="e.g. WELCOME10" style="text-transform:uppercase;border-radius:10px;padding:0.6rem 0.85rem;font-size:0.88rem;">
+              <button type="button" id="apply-promo-btn" class="btn btn-outline btn-sm" style="border-radius:10px;padding:0 1rem;">Apply</button>
+            </div>
           </div>
-          <div class="form-group mt-2" style="margin-bottom:0;">
-            <label>Payment</label>
-            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;">
-              <input type="radio" name="paymentMethod" value="PAY_AT_PICKUP" checked> <span id="pay-at-label">Pay at pickup</span>
+
+          <!-- Payment Method -->
+          <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);">
+            <label style="font-size:0.82rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:0.45rem;">
+              Payment Method
             </label>
-            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" th:if="${stripeEnabled}">
-              <input type="radio" name="paymentMethod" value="STRIPE"> Pay with card (Stripe)
-            </label>
-            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" th:if="${bakongEnabled}">
-              <input type="radio" name="paymentMethod" value="BAKONG"> Bakong KHQR <span th:if="${khqrDemo}" class="text-muted">(demo)</span>
-            </label>
-            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" th:if="${khqrEnabled}">
-              <input type="radio" name="paymentMethod" value="KHQR"> KHQR
-            </label>
-            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" th:if="${abaEnabled}">
-              <input type="radio" name="paymentMethod" value="ABA"> ABA Pay
-            </label>
-            <label class="flex items-center gap-sm mt-1" style="font-size:0.88rem;" th:if="${wingEnabled}">
-              <input type="radio" name="paymentMethod" value="WING"> Wing
-            </label>
-            <p th:unless="${stripeEnabled}" class="text-muted mt-1" style="font-size:0.82rem;">Enable Stripe with APP_STRIPE_ENABLED on server.</p>
+            <div style="display:grid;gap:0.45rem;">
+              <label class="flex items-center gap-sm" style="font-size:0.88rem;cursor:pointer;">
+                <input type="radio" name="paymentMethod" value="PAY_AT_PICKUP" checked>
+                <span id="pay-at-label"><i class="fa-solid fa-money-bill-wave" style="color:var(--success);margin-right:0.3rem;"></i> Cash / Pay at Counter</span>
+              </label>
+              <label class="flex items-center gap-sm" style="font-size:0.88rem;cursor:pointer;" th:if="${bakongEnabled}">
+                <input type="radio" name="paymentMethod" value="BAKONG">
+                <span><i class="fa-solid fa-qrcode" style="color:#e74c3c;margin-right:0.3rem;"></i> Bakong KHQR <span th:if="${khqrDemo}" class="text-muted">(demo)</span></span>
+              </label>
+              <label class="flex items-center gap-sm" style="font-size:0.88rem;cursor:pointer;" th:if="${stripeEnabled}">
+                <input type="radio" name="paymentMethod" value="STRIPE">
+                <span><i class="fa-brands fa-stripe" style="color:#635bff;margin-right:0.3rem;"></i> Credit Card (Stripe)</span>
+              </label>
+            </div>
           </div>
-          <button id="checkout-btn" class="btn btn-primary btn-block mt-3" disabled>Checkout</button>
+
+          <!-- Place Order Button -->
+          <button id="checkout-btn" class="btn btn-primary btn-block mt-3" style="padding:0.85rem;font-weight:700;font-size:1.05rem;border-radius:12px;" disabled>
+            Place Order Now
+          </button>
+          
+          <div style="text-align:center;margin-top:0.65rem;font-size:0.78rem;color:var(--text-muted);">
+            <i class="fa-solid fa-shield-halved" style="color:var(--success);"></i> Instant checkout · No account required
+          </div>
         </aside>
       </div>
 
-      <div id="empty-cart" class="empty-state hidden">
-        <h2>Your bag is empty</h2>
-        <p class="text-muted mt-1">Explore the menu and add something delicious.</p>
-        <a href="/index#product-menu" class="btn btn-primary mt-2">Browse menu</a>
+      <!-- Empty state -->
+      <div id="empty-cart" class="empty-state hidden" style="text-align:center;padding:4rem 1rem;">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(198,123,74,0.12);color:var(--accent);display:grid;place-items:center;font-size:2rem;margin:0 auto 1.25rem;">
+          <i class="fa-solid fa-bag-shopping"></i>
+        </div>
+        <h2 style="font-size:1.6rem;font-weight:700;margin-bottom:0.35rem;">Your Bag is Empty</h2>
+        <p class="text-muted" style="margin-bottom:1.5rem;">Explore our specialty coffee and fresh bakery menu.</p>
+        <a href="/home#product-menu" class="btn btn-primary" style="padding:0.75rem 1.5rem;font-weight:700;">
+          <i class="fa-solid fa-mug-saucer"></i> Browse Menu
+        </a>
       </div>
     </div>
   </main>
@@ -104,6 +157,9 @@
       const totalPriceEl = document.getElementById('total-price');
       const TAX_RATE = 0.10;
       const DELIVERY_FEE = 3.00;
+      let appliedDiscount = 0;
+      let appliedCoupon = null;
+
       const qrTableId = localStorage.getItem('qrTableId');
       const qrTableNumber = localStorage.getItem('qrTableNumber');
       if (qrTableId) {
@@ -113,17 +169,20 @@
         const label = document.getElementById('qr-table-label');
         if (label) label.textContent = qrTableNumber || qrTableId;
         const payLabel = document.getElementById('pay-at-label');
-        if (payLabel) payLabel.textContent = 'Pay at table (after kitchen)';
-        document.getElementById('checkout-btn').textContent = 'Send to kitchen';
+        if (payLabel) payLabel.textContent = 'Pay at table';
+        document.getElementById('checkout-btn').textContent = 'Send Order to Kitchen';
       }
 
       document.querySelectorAll('input[name="fulfillmentType"]').forEach(r => {
         r.addEventListener('change', () => {
           const isDelivery = document.querySelector('input[name="fulfillmentType"]:checked')?.value === 'DELIVERY';
           document.getElementById('delivery-address-group')?.classList.toggle('hidden', !isDelivery);
+          const feeRow = document.getElementById('delivery-fee-row');
+          if (feeRow) feeRow.style.display = isDelivery ? 'flex' : 'none';
           renderCart();
         });
       });
+
       let cart = JSON.parse(localStorage.getItem('cart')) || [];
       const sizeModifiers = { Small: -0.50, Medium: 0, Large: 1.00 };
 
@@ -157,34 +216,40 @@
           totalItems += item.quantity;
 
           const row = document.createElement('div');
-          row.className = 'cart-item';
+          row.className = 'cart-item card';
+          row.style.display = 'grid';
+          row.style.gridTemplateColumns = '80px 1fr auto';
+          row.style.gap = '1rem';
+          row.style.padding = '1rem';
+          row.style.borderRadius = '16px';
+          row.style.alignItems = 'center';
           row.innerHTML = `
-            <img src="${item.imageUrl}" alt="${item.name}">
+            <img src="${item.imageUrl}" alt="${item.name}" style="width:80px;height:80px;border-radius:12px;object-fit:cover;">
             <div>
-              <h3 style="font-size:1.2rem;margin-bottom:0.25rem;">${item.name}</h3>
-              <p class="text-muted" style="margin:0;font-size:0.88rem;">$${item.price.toFixed(2)} each</p>
-              <button data-index="${index}" class="remove-item-btn btn btn-ghost btn-sm mt-1" type="button">Remove</button>
+              <h3 style="font-size:1.1rem;margin-bottom:0.25rem;">${item.name}</h3>
+              <p class="text-muted" style="margin:0;font-size:0.85rem;">$${item.price.toFixed(2)} each</p>
+              <button data-index="${index}" class="remove-item-btn btn btn-ghost btn-sm mt-1" type="button" style="color:#e74c3c;padding:0;font-size:0.8rem;">
+                <i class="fa-solid fa-trash-can"></i> Remove
+              </button>
             </div>
             <div style="text-align:right;">
-              <div class="qty-control">
-                <button type="button" data-index="${index}" data-change="-1" class="update-quantity-btn">−</button>
-                <span style="min-width:24px;text-align:center;">${item.quantity}</span>
-                <button type="button" data-index="${index}" data-change="1" class="update-quantity-btn">+</button>
+              <div class="qty-control" style="display:flex;align-items:center;gap:0.35rem;border:1px solid var(--border);border-radius:999px;padding:2px 6px;">
+                <button type="button" data-index="${index}" data-change="-1" class="update-quantity-btn" style="border:none;background:transparent;cursor:pointer;font-weight:700;font-size:1rem;padding:0 4px;">−</button>
+                <span style="min-width:20px;text-align:center;font-weight:700;font-size:0.9rem;">${item.quantity}</span>
+                <button type="button" data-index="${index}" data-change="1" class="update-quantity-btn" style="border:none;background:transparent;cursor:pointer;font-weight:700;font-size:1rem;padding:0 4px;">+</button>
               </div>
-              <div style="font-weight:700;margin-top:0.75rem;">$${itemTotal.toFixed(2)}</div>
+              <div style="font-weight:800;font-size:1.05rem;color:var(--accent);margin-top:0.45rem;">$${itemTotal.toFixed(2)}</div>
             </div>
-            <div style="grid-column:1/-1;display:grid;gap:0.75rem;grid-template-columns:1fr 2fr;">
+            <div style="grid-column:1/-1;display:grid;gap:0.65rem;grid-template-columns:1fr 2fr;margin-top:0.35rem;padding-top:0.65rem;border-top:1px solid var(--border);">
               <div class="form-group" style="margin:0;">
-                <label>Size</label>
-                <select data-index="${index}" class="select size-select">
+                <select data-index="${index}" class="select size-select" style="width:100%;padding:0.4rem 0.6rem;font-size:0.85rem;border-radius:8px;border:1px solid var(--border);">
                   <option value="Small" ${item.size==='Small'?'selected':''}>Small (−$0.50)</option>
-                  <option value="Medium" ${item.size==='Medium'?'selected':''}>Medium</option>
+                  <option value="Medium" ${item.size==='Medium'?'selected':''}>Medium (Regular)</option>
                   <option value="Large" ${item.size==='Large'?'selected':''}>Large (+$1.00)</option>
                 </select>
               </div>
               <div class="form-group" style="margin:0;">
-                <label>Note</label>
-                <input type="text" data-index="${index}" class="input note-input" value="${item.note}" placeholder="Less sugar, extra ice…">
+                <input type="text" data-index="${index}" class="input note-input" value="${item.note}" placeholder="Note (e.g. 50% sweet, oat milk…)" style="width:100%;padding:0.4rem 0.6rem;font-size:0.85rem;border-radius:8px;border:1px solid var(--border);">
               </div>
             </div>`;
           cartItemsContainer.appendChild(row);
@@ -192,10 +257,12 @@
 
         totalItemsEl.textContent = totalItems;
         subtotalPriceEl.textContent = '$' + subtotal.toFixed(2);
-        const tax = subtotal * TAX_RATE;
-        const delivery = document.querySelector('input[name="fulfillmentType"]:checked')?.value === 'DELIVERY' ? DELIVERY_FEE : 0;
+        const taxable = Math.max(0, subtotal - appliedDiscount);
+        const tax = taxable * TAX_RATE;
+        const isDelivery = document.querySelector('input[name="fulfillmentType"]:checked')?.value === 'DELIVERY';
+        const delivery = isDelivery ? DELIVERY_FEE : 0;
         taxPriceEl.textContent = '$' + tax.toFixed(2);
-        totalPriceEl.textContent = '$' + (subtotal + tax + delivery).toFixed(2);
+        totalPriceEl.textContent = '$' + (taxable + tax + delivery).toFixed(2);
         document.getElementById('checkout-btn').disabled = false;
         updateHeaderCartCount();
       }
@@ -223,10 +290,32 @@
         saveAndRender();
       });
 
+      document.getElementById('apply-promo-btn')?.addEventListener('click', () => {
+        const code = document.getElementById('coupon-code')?.value?.trim().toUpperCase();
+        const subtotal = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+        if (code === 'WELCOME10') {
+          appliedDiscount = subtotal * 0.10;
+          appliedCoupon = 'WELCOME10';
+          document.getElementById('discount-row')?.classList.remove('hidden');
+          document.getElementById('discount-price').textContent = '-$' + appliedDiscount.toFixed(2);
+          alert('10% Promo Code applied!');
+        } else {
+          appliedDiscount = 0;
+          appliedCoupon = null;
+          document.getElementById('discount-row')?.classList.add('hidden');
+          alert('Invalid promo code');
+        }
+        renderCart();
+      });
+
       document.getElementById('checkout-btn').addEventListener('click', async () => {
         const checkoutBtn = document.getElementById('checkout-btn');
         checkoutBtn.disabled = true;
-        checkoutBtn.textContent = 'Processing…';
+        checkoutBtn.textContent = 'Placing Order…';
+
+        const guestName = document.getElementById('guest-name')?.value?.trim() || 'Guest Customer';
+        const guestPhone = document.getElementById('guest-phone')?.value?.trim() || '';
+
         const payload = {
           items: cart.map(item => ({
             productId: parseInt(item.id, 10),
@@ -236,12 +325,13 @@
             price: item.price
           })),
           paymentMethod: document.querySelector('input[name="paymentMethod"]:checked')?.value || 'PAY_AT_PICKUP',
-          couponCode: document.getElementById('coupon-code')?.value?.trim() || null,
+          couponCode: appliedCoupon,
           fulfillmentType: document.querySelector('input[name="fulfillmentType"]:checked')?.value || 'PICKUP',
           deliveryAddress: document.getElementById('delivery-address')?.value?.trim() || null,
           tableId: qrTableId ? parseInt(qrTableId, 10) : null,
-          guestName: document.getElementById('guest-name')?.value?.trim() || null
+          guestName: guestPhone ? `${guestName} (${guestPhone})` : guestName
         };
+
         try {
           const response = await fetch('/order/checkout', {
             method: 'POST',
@@ -252,17 +342,15 @@
           if (response.ok) {
             localStorage.removeItem('cart');
             window.location.href = result.redirectUrl;
-          } else if (response.status === 401) {
-            window.location.href = result.redirectUrl;
           } else {
-            alert(result.message || 'Checkout failed');
+            alert(result.message || 'Checkout failed. Please try again.');
             checkoutBtn.disabled = false;
-            checkoutBtn.textContent = 'Checkout';
+            checkoutBtn.textContent = 'Place Order Now';
           }
         } catch (err) {
-          alert(err.message);
+          alert('Error placing order: ' + err.message);
           checkoutBtn.disabled = false;
-          checkoutBtn.textContent = 'Checkout';
+          checkoutBtn.textContent = 'Place Order Now';
         }
       });
 

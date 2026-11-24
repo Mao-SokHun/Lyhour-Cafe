@@ -121,10 +121,11 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**", "/dashboard/**", "/products/**", "/users/**")
                         .hasAnyRole("ADMIN", "MANAGER", "CASHIER", "KITCHEN", "OWNER", "SUPER_ADMIN", "WAITER")
 
-                .requestMatchers("/index", "/customer/**", "/order/success", "/api/v1/**").authenticated()
+                .requestMatchers("/customer/**").authenticated()
 
-                .requestMatchers("/", "/home", "/signup", "/signin", "/signout", "/cart", "/order/checkout",
-                        "/order/khqr-pay", "/reservations", "/qr/**", "/forgot-password", "/reset-password",
+                .requestMatchers("/", "/home", "/index", "/signup", "/signin", "/signout", "/cart", "/order/**",
+                        "/order/checkout", "/order/success", "/order/khqr-pay", "/reservations", "/qr/**",
+                        "/forgot-password", "/reset-password",
                         "/manifest.json", "/sw.js",
                         "/css/**", "/javascript/**", "/images/**", "/h2-console/**", "/ws/**").permitAll()
 

@@ -2,34 +2,60 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head}"></head>
 <body>
-  <div th:replace="~{fragments/order-header :: order-header}"></div>
+  <div th:replace="~{fragments/guest-header :: guest-header}"></div>
   <main class="page">
-    <div class="container" style="max-width:560px;">
-      <div class="card text-center" style="padding:3rem 2rem;">
-        <div style="width:72px;height:72px;margin:0 auto 1rem;border-radius:50%;background:#d8f3e5;color:var(--success);display:grid;place-items:center;font-size:2rem;">
+    <div class="container" style="max-width:580px;margin:2rem auto;">
+      <div class="card text-center" style="padding:3rem 2rem;border-radius:22px;box-shadow:var(--shadow);background:var(--surface);">
+        <div style="width:76px;height:76px;margin:0 auto 1.25rem;border-radius:50%;background:#def7ec;color:#03543f;display:grid;place-items:center;font-size:2.2rem;box-shadow:0 4px 14px rgba(3,84,63,0.15);">
           <i class="fa-solid fa-check"></i>
         </div>
-        <h1 class="page-title" th:if="${qrTableOrder}">Sent to kitchen</h1>
-        <h1 class="page-title" th:unless="${qrTableOrder}">Order placed</h1>
-        <p class="page-subtitle" th:if="${stripePaid}">Payment received via Stripe. We're preparing your drinks.</p>
-        <p class="page-subtitle" th:if="${qrTableOrder and order != null and !stripePaid}">
-          Order #<span th:text="${order.id}"></span>
-          <span th:if="${order.cafeTable != null}"> · Table <span th:text="${order.cafeTable.tableNumber}"></span></span>
-          <br>Your order is with the kitchen. Pay at the table when ready, or ask staff to mark paid.
+        
+        <h1 class="page-title" style="font-size:1.85rem;margin-bottom:0.35rem;" th:if="${qrTableOrder}">Sent to Kitchen! ☕</h1>
+        <h1 class="page-title" style="font-size:1.85rem;margin-bottom:0.35rem;" th:unless="${qrTableOrder}">Order Placed Successfully! 🎉</h1>
+        
+        <p class="text-muted" style="font-size:0.95rem;margin-bottom:1.5rem;" th:if="${order != null}">
+          Order <b>#<span th:text="${order.id}"></span></b> · Total <b>$<span th:text="${order.totalPrice}"></span></b>
+          <span th:if="${order.cafeTable != null}"> · Table <b th:text="${order.cafeTable.tableNumber}"></b></span>
         </p>
-        <p class="page-subtitle" th:unless="${qrTableOrder or stripePaid}">We're preparing your drinks. You'll get updates in your order history.</p>
-        <a th:if="${qrTableOrder and order != null and order.cafeTable != null}" th:href="@{'/qr/' + ${order.cafeTable.qrCode}}" class="btn btn-primary mt-3">Order more</a>
-        <a th:unless="${qrTableOrder}" href="/index#product-menu" class="btn btn-primary mt-3">Order more</a>
-        <a href="/customer/orders" class="btn btn-outline mt-2" style="margin-left:0.5rem;">View orders</a>
+
+        <!-- Order card details -->
+        <div th:if="${order != null}" style="background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:1.25rem;text-align:left;margin-bottom:1.5rem;font-size:0.88rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;">
+            <span class="text-muted">Estimated Prep Time</span>
+            <span style="font-weight:700;"><i class="fa-regular fa-clock" style="color:var(--accent);"></i> ~[[${order.estimatedPrepMinutes ?: 10}]] mins</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;">
+            <span class="text-muted">Payment Method</span>
+            <span style="font-weight:600;" th:text="${order.paymentMethod}">CASH</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span class="text-muted">Payment Status</span>
+            <span style="font-weight:700;color:var(--accent);" th:text="${order.paymentStatus}">PENDING</span>
+          </div>
+        </div>
+
+        <p class="text-muted" style="font-size:0.88rem;line-height:1.5;margin-bottom:1.5rem;">
+          Thank you for choosing Lyhour Coffee! Your barista is already preparing your order.
+        </p>
+
+        <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+          <a href="/home#product-menu" class="btn btn-primary" style="padding:0.7rem 1.4rem;font-weight:700;">
+            <i class="fa-solid fa-mug-saucer"></i> Order More
+          </a>
+          <a href="/telegram-app" class="btn btn-outline" style="border-color:#0088cc;color:#0088cc;padding:0.7rem 1.4rem;font-weight:700;">
+            <i class="fa-brands fa-telegram"></i> Track in Telegram
+          </a>
+        </div>
       </div>
     </div>
   </main>
+
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('clear') === 'true' || params.get('session_id') || params.get('qr') === '1') {
-        localStorage.removeItem('cart');
-      }
+      // Clear cart
+      localStorage.removeItem('cart');
     });
   </script>
 </body>

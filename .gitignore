@@ -34,6 +34,7 @@ build/
 
 ### Local secrets & data ###
 data/
+backups/
 .env
 .env.local
 application-local.properties

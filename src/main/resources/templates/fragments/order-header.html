@@ -2,36 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <header th:fragment="order-header" class="site-header is-scrolled" id="header">
   <div class="inner">
-    <a href="/index" class="logo">
+    <a href="/home" class="logo">
       <span class="logo-mark"><i class="fa-solid fa-mug-hot"></i></span>
       <span>Lyhour Coffee</span>
     </a>
     <nav class="site-nav">
-      <a href="/index">Home</a>
-      <a href="/index#product-menu">Menu</a>
-      <a href="/customer/orders">Orders</a>
+      <a href="/home">Home</a>
+      <a href="/home#product-menu">Menu</a>
+      <a href="/home#about">About</a>
     </nav>
     <div class="header-actions">
+      <a href="/telegram-app" class="btn btn-sm" style="background:linear-gradient(135deg,#229ed9,#0088cc);color:#fff;border:none;border-radius:999px;padding:0.45rem 0.85rem;font-size:0.8rem;display:inline-flex;align-items:center;gap:0.4rem;font-weight:600;" title="Open Telegram Mini App">
+        <i class="fa-brands fa-telegram"></i> <span>Mini App</span>
+      </a>
       <a href="/cart" class="icon-btn" aria-label="Cart">
         <i class="fa-solid fa-bag-shopping"></i>
         <span class="cart-count-badge hidden">0</span>
       </a>
-      <div class="dropdown">
-        <button type="button" class="icon-btn" id="profile-toggle-btn"><i class="fa-regular fa-user"></i></button>
-        <div class="dropdown-menu" id="profile-menu">
-          <a href="/customer/profile">My profile</a>
-          <a href="/customer/orders">My orders</a>
-          <a href="/signout" class="danger">Sign out</a>
-        </div>
-      </div>
+      <a href="/signin" class="btn btn-ghost btn-sm" style="font-size:0.78rem;color:var(--text-muted);border:1px solid var(--border);border-radius:999px;padding:0.4rem 0.75rem;" title="Staff Portal">
+        <i class="fa-solid fa-lock" style="font-size:0.7rem;"></i> Staff
+      </a>
       <button type="button" class="menu-toggle" id="menu-toggle"><i class="fa-solid fa-bars"></i></button>
     </div>
   </div>
   <div class="mobile-menu" id="mobile-menu">
-    <a href="/index">Home</a>
-    <a href="/customer/orders">Orders</a>
+    <a href="/home">Home</a>
+    <a href="/home#product-menu">Menu</a>
+    <a href="/telegram-app">Telegram Mini App</a>
     <a href="/cart">Cart</a>
-    <a href="/signout">Sign out</a>
+    <a href="/signin">Staff Login</a>
   </div>
 </header>
 </html>

@@ -49,18 +49,13 @@ public class Homecontroller {
     }
 
     @GetMapping("/")
-    public String root(Authentication authentication) {
-        if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().toString().equals("anonymousUser")) {
-            return "redirect:/index";
-        }
+    public String root() {
         return "redirect:/home";
     }
 
     @GetMapping("/index")
-    public String showIndex(Model model) {
-        List<Product> products = productRepository.findAll(); 
-        model.addAttribute("products", products);          
-        return "index";                                     
+    public String showIndex() {
+        return "redirect:/home";
     }
 
     @GetMapping("/home")

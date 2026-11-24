@@ -3,26 +3,58 @@
 <head th:replace="~{fragments/head :: head}"></head>
 <body class="auth-page">
   <div class="auth-shell">
-    <div class="auth-brand">
-      <span class="logo-mark" style="margin-bottom:1rem;"><i class="fa-solid fa-mug-hot"></i></span>
-      <h1>Lyhour Coffee</h1>
-      <p>Sign in to save orders, track history, and checkout faster.</p>
+    <div class="auth-brand" style="background:linear-gradient(135deg, #1b1612, #342318);color:#fff;padding:2.5rem 2rem;display:flex;flex-direction:column;justify-content:center;">
+      <span class="logo-mark" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#c67b4a,#7d4422);display:grid;place-items:center;font-size:1.5rem;margin-bottom:1.25rem;color:#fff;">
+        <i class="fa-solid fa-mug-hot"></i>
+      </span>
+      <h1 style="font-size:1.85rem;font-weight:700;margin-bottom:0.5rem;color:#fff;">Lyhour Coffee</h1>
+      <p style="color:#d8c8bb;font-size:0.95rem;line-height:1.5;margin-bottom:1.5rem;">
+        Staff &amp; Admin Dashboard Portal.
+      </p>
+      
+      <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:1rem;font-size:0.85rem;color:#f0e2d8;">
+        <div style="font-weight:700;margin-bottom:0.35rem;color:#e8af7e;"><i class="fa-solid fa-circle-info"></i> Customer Notice:</div>
+        <div>Customers <b>do not</b> need to register or sign in to order! You can order directly as a guest.</div>
+        <a href="/home" class="btn btn-sm btn-primary mt-2" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8rem;padding:0.45rem 0.85rem;">
+          <i class="fa-solid fa-arrow-left"></i> Return to Shop Menu
+        </a>
+      </div>
     </div>
-    <div class="auth-form">
-      <h2>Sign in</h2>
-      <p class="subtitle">Welcome back to the shop.</p>
+
+    <div class="auth-form" style="padding:2.5rem 2rem;">
+      <h2 style="font-size:1.6rem;font-weight:700;margin-bottom:0.25rem;">Staff Sign In</h2>
+      <p class="subtitle" style="color:var(--text-muted);font-size:0.88rem;margin-bottom:1.5rem;">
+        Sign in to access POS, Kitchen &amp; Store Management.
+      </p>
+
+      <div th:if="${param.error}" style="background:#fde8e8;border:1px solid #f8b4b4;color:#9b1c1c;padding:0.65rem 0.9rem;border-radius:10px;font-size:0.85rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span>Invalid username or password. Please try again.</span>
+      </div>
+
+      <div th:if="${param.logout}" style="background:#def7ec;border:1px solid #bcf0da;color:#03543f;padding:0.65rem 0.9rem;border-radius:10px;font-size:0.85rem;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+        <i class="fa-solid fa-check"></i>
+        <span>You have been signed out successfully.</span>
+      </div>
+
       <form method="post" th:action="@{/signin}">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input class="input" type="text" id="username" name="username" placeholder="Your username" required>
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label for="username" style="font-weight:600;font-size:0.85rem;margin-bottom:0.35rem;display:block;">Staff Username</label>
+          <input class="input" type="text" id="username" name="username" placeholder="e.g. admin or cashier" required style="width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid var(--border);">
         </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input class="input" type="password" id="password" name="password" placeholder="Your password" required>
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label for="password" style="font-weight:600;font-size:0.85rem;margin-bottom:0.35rem;display:block;">Password</label>
+          <input class="input" type="password" id="password" name="password" placeholder="••••••••" required style="width:100%;padding:0.7rem 0.9rem;border-radius:10px;border:1px solid var(--border);">
         </div>
-        <button type="submit" class="btn btn-primary btn-block mt-2">Sign in</button>
+        <button type="submit" class="btn btn-primary btn-block" style="width:100%;padding:0.75rem;font-weight:700;border-radius:10px;">
+          <i class="fa-solid fa-lock-open" style="margin-right:0.4rem;"></i> Sign In to Dashboard
+        </button>
       </form>
-      <p class="form-note">No account? <a href="/signup">Create one</a> · <a href="/forgot-password">Forgot password?</a></p>
+
+      <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;color:var(--text-muted);">
+        <span>Demo: <code>admin</code> / <code>admin123</code></span>
+        <a href="/home" style="color:var(--accent);font-weight:600;"><i class="fa-solid fa-mug-saucer"></i> Order Coffee</a>
+      </div>
     </div>
   </div>
 </body>

@@ -40,23 +40,23 @@ public class OrderController {
             HttpSession session) {
 
         if (customer == null) {
-            if (request.getSource() == com.example.demo.Models.OrderSource.TELEGRAM
-                    || request.getTelegramChatId() != null) {
-                User walkin = userRepository.findByUsername("walkin");
-                if (walkin != null) {
-                    customer = walkin;
-                }
-            } else if (request.getTableId() != null) {
-                User walkin = userRepository.findByUsername("walkin");
-                if (walkin == null) {
-                    return ResponseEntity.badRequest().body(Map.of("message", "Guest ordering unavailable"));
-                }
-                customer = walkin;
-            } else {
-                session.setAttribute("pendingCart", request.getItems());
-                session.setAttribute("pendingPaymentMethod", request.getPaymentMethod());
-                return ResponseEntity.status(401).body(Map.of("redirectUrl", "/signin"));
+            // Guest ordering - no account or registration required!
+            User walkin = userRepository.findByUsername("walkin");
+            if (walkin == null) {
+                walkin = userRepository.findAll().stream()
+                        .filter(u -> "CUSTOMER".equals(u.getRole()))
+                        .findFirst()
+                        .orElse(null);
             }
+            if (walkin == null) {
+                walkin = new User();
+                walkin.setUsername("walkin");
+                walkin.setEmail("walkin@cafe.com");
+                walkin.setPassword("walkin123");
+                walkin.setRole("CUSTOMER");
+                walkin = userRepository.save(walkin);
+            }
+            customer = walkin;
         }
 
         if (request.getItems() == null || request.getItems().isEmpty()) {
